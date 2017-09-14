@@ -17,15 +17,20 @@ namespace LeafServer
 
         public static bool LoadContainer()
         {
+
             using (var conn = new SqlConnection(CommonLib.DBConnConfig))
             {
-                conn.Open();
+                try
+                {
+                    conn.Open();
 
-                var dbResult = conn.QueryMultiple("sp_GetLeafData", null, commandType: CommandType.StoredProcedure);
+                    var dbResult = conn.QueryMultiple("sp_GetLeafData", null, commandType: CommandType.StoredProcedure);
 
-                // TODO : 데이터 바인딩 구현하기
-                //ToDictionary(ref _itemInfoList, GetItemInfo(dtDataSet.Tables[0]), "Index");
-                //ToDictionary(ref _cardInfoList, GetCardInfo(dtDataSet.Tables[1]), "Index");
+                    // TODO : 데이터 바인딩 구현하기
+                    //ToDictionary(ref _itemInfoList, GetItemInfo(dtDataSet.Tables[0]), "Index");
+                    //ToDictionary(ref _cardInfoList, GetCardInfo(dtDataSet.Tables[1]), "Index");
+                }
+                catch { return false; }
             }
 
             if (_itemInfoList.Count > 0 && _cardInfoList.Count > 0)
@@ -117,19 +122,35 @@ namespace LeafServer
             }
         }
 
-        public static List<ItemModel> GetItemList()
+        public static List<ItemModel> GetItemList
         {
-            if (_itemInfoList == null || _itemInfoList.Count < 1)
-                LoadContainer();
+            get
+            {
+                if (_itemInfoList == null || _itemInfoList.Count < 1)
+                {
+                    LoadContainer();
 
-            return new List<ItemModel>(_itemInfoList.Values);
+                    if (_itemInfoList == null || _itemInfoList.Count < 1)
+                        return null;
+                }
+
+                return new List<ItemModel>(_itemInfoList.Values);
+            }
         }
-        public static List<CardModel> GetCardList()
+        public static List<CardModel> GetCardList
         {
-            if (_cardInfoList == null || _cardInfoList.Count < 1)
-                LoadContainer();
+            get
+            {
+                if (_cardInfoList == null || _cardInfoList.Count < 1)
+                {
+                    LoadContainer();
 
-            return new List<CardModel>(_cardInfoList.Values);
+                    if (_cardInfoList == null || _cardInfoList.Count < 1)
+                        return null;
+                }
+
+                return new List<CardModel>(_cardInfoList.Values);
+            }
         }
 
         public static ItemModel FindItem(int inIndex)
@@ -137,7 +158,7 @@ namespace LeafServer
             if (_itemInfoList == null || _itemInfoList.Count < 1)
                 LoadContainer();
 
-            return GetItemList().Find(r => r.Index == inIndex);
+            return GetItemList.Find(r => r.Index == inIndex);
         }
         public static CardModel FindCard(int inIndex)
         {
@@ -150,7 +171,12 @@ namespace LeafServer
         public static List<ItemModel> GetShopGoods(string inShop)
         {
             if (_itemInfoList == null || _itemInfoList.Count < 1)
+            {
                 LoadContainer();
+
+                if (_itemInfoList == null || _itemInfoList.Count < 1)
+                    return null;
+            }
 
             return new List<ItemModel>(_itemInfoList.Values).FindAll(r => r.Store == inShop);
         }

@@ -9,14 +9,14 @@ namespace LeafServer
 {
     public static class AccountManager
     {
-        public static bool CheckID(string inAccountID)
+        public static bool CheckID(string AccountID)
         {
             using (var conn = new SqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
 
-                param.Add("@inAccountID", inAccountID);
+                param.Add("@AccountID", AccountID);
                 //param.Add("@outCheck", boCheckValue, direction: ParameterDirection.Output);
                 conn.Query("dbo.sp_CheckAccountID", param, commandType: CommandType.StoredProcedure);
 
@@ -25,7 +25,7 @@ namespace LeafServer
             return false;
         }
 
-        public static bool Login(string inAccountID, string inPassword, out UserModel outUserInfo)
+        public static bool Login(string AccountID, string inPassword, out UserModel outUserInfo)
         {
             outUserInfo = null;
 
@@ -33,7 +33,7 @@ namespace LeafServer
             {
                 conn.Open();
                 var param = new DynamicParameters();
-                param.Add("@inAccountID", inAccountID);
+                param.Add("@AccountID", AccountID);
                 param.Add("@inPassword", inPassword);
                 param.Add("@EncryptKey", CommonLib.DBEncryptKey);
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
@@ -65,7 +65,7 @@ namespace LeafServer
             {
                 conn.Open();
                 var param = new DynamicParameters();
-                param.Add("@inAccountID", AccountID);
+                param.Add("@AccountID", AccountID);
                 param.Add("@inAvatarOrder", AvatarOrder);
                 param.Add("@inGetGP", GetGP);
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
@@ -112,7 +112,7 @@ namespace LeafServer
                 param.Add("@AccountID", AccountID);
                 param.Add("@Password", Password);
                 param.Add("@Gender", Gender);
-                param.Add("EncryptKey", CommonLib.DBEncryptKey);
+                param.Add("@EncryptKey", CommonLib.DBEncryptKey);
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
                 conn.Query("dbo.sp_CreateAccount", param, commandType: CommandType.StoredProcedure);
 
@@ -134,84 +134,73 @@ namespace LeafServer
             }
         }
 
-        public static bool UpdateCostume(string inAccountID, AvatarModel inAvatar)
+        public static bool UpdateCostume(string AccountID, AvatarModel Avatar)
         {
-            try
+            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
             {
-                using (DBTool_MySQL dbTool = new DBTool_MySQL(CommonLib.DBConnConfig))
-                {
-                    dbTool.Connect();
-                    MySqlParamArray ParamList = new MySqlParamArray();
-                    ParamList.Add("inAccountID", inAccountID);
-                    ParamList.Add("inOrder", inAvatar.Order);
-                    ParamList.Add("inHair", inAvatar.Hair);
-                    ParamList.Add("inHairAcc", inAvatar.HairAcc);
-                    ParamList.Add("inClothes", inAvatar.Clothes);
-                    ParamList.Add("inClothes2", inAvatar.Clothes2);
-                    ParamList.Add("inClothes3", inAvatar.Clothes3);
-                    ParamList.Add("inPants", inAvatar.Pants);
-                    ParamList.Add("inPants2", inAvatar.Pants2);
-                    ParamList.Add("inPants3", inAvatar.Pants3);
-                    ParamList.Add("inShoes", inAvatar.Shoes);
-                    ParamList.Add("inWeapone", inAvatar.Weapone);
-                    ParamList.Add("inWeapone2", inAvatar.Weapone2);
-                    ParamList.Add("inWeapone3", inAvatar.Weapone3);
-                    ParamList.Add("inAcc1", inAvatar.Acc1);
-                    ParamList.Add("inAcc2", inAvatar.Acc2);
-                    ParamList.Add("inAcc3", inAvatar.Acc3);
-                    ParamList.Add("inAcc4", inAvatar.Acc4);
-                    ParamList.Add("inAcc5", inAvatar.Acc5);
-                    ParamList.Add("inAcc6", inAvatar.Acc6);
-                    dbTool.ExcuteNonQuery("sp_UpdateCostume", ParamList);
-                }
+                conn.Open();
+                var param = new DynamicParameters();
 
-                return true;
+                param.Add("@AccountID", AccountID);
+                param.Add("@Order", Avatar.Order);
+                param.Add("@Hair", Avatar.Hair);
+                param.Add("@HairAcc", Avatar.HairAcc);
+                param.Add("@Clothes", Avatar.Clothes);
+                param.Add("@Clothes2", Avatar.Clothes2);
+                param.Add("@Clothes3", Avatar.Clothes3);
+                param.Add("@Pants", Avatar.Pants);
+                param.Add("@Pants2", Avatar.Pants2);
+                param.Add("@Pants3", Avatar.Pants3);
+                param.Add("@Shoes", Avatar.Shoes);
+                param.Add("@Weapone", Avatar.Weapone);
+                param.Add("@Weapone2", Avatar.Weapone2);
+                param.Add("@Weapone3", Avatar.Weapone3);
+                param.Add("@Acc1", Avatar.Acc1);
+                param.Add("@Acc2", Avatar.Acc2);
+                param.Add("@Acc3", Avatar.Acc3);
+                param.Add("@Acc4", Avatar.Acc4);
+                param.Add("@Acc5", Avatar.Acc5);
+                param.Add("@Acc6", Avatar.Acc6);
+                param.Add("RetVal", direction: ParameterDirection.ReturnValue);
+                conn.Query("dbo.sp_UpdateCostume", param, commandType: CommandType.StoredProcedure);
+
+                return CommonLib.IsSuccess(param.Get<int>("RetVal"));
             }
-            catch
-            { return false; }
         }
 
-        public static bool BuyItem(string inAccountID, int inOrder, int inItemIndex)
+        public static bool BuyItem(string AccountID, int Order, int ItemIndex)
         {
-            try
+            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
             {
-                using (DBTool_MySQL dbTool = new DBTool_MySQL(CommonLib.DBConnConfig))
-                {
-                    dbTool.Connect();
-                    MySqlParamArray ParamList = new MySqlParamArray();
-                    ParamList.Add("inAccountID", inAccountID);
-                    ParamList.Add("inOrder", inOrder);
-                    ParamList.Add("inItemIndex", inItemIndex);
-                    dbTool.ExcuteNonQuery("sp_BuyItem", ParamList);
-                }
+                conn.Open();
+                var param = new DynamicParameters();
+                param.Add("@AccountID", AccountID);
+                param.Add("@Order", Order);
+                param.Add("@ItemIndex", ItemIndex);
+                param.Add("RetVal", direction: ParameterDirection.ReturnValue);
+                conn.Query("dbo.sp_BuyItem", param);
 
-                return true;
+                return CommonLib.IsSuccess(param.Get<int>("RetVal"));
             }
-            catch
-            { return false; }
         }
 
-        public static bool SellItem(string inAccountID, int inOrder, int inItemIndex)
+        public static bool SellItem(string AccountID, int Order, int ItemIndex)
         {
-            try
+            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
             {
-                using (DBTool_MySQL dbTool = new DBTool_MySQL(CommonLib.DBConnConfig))
-                {
-                    dbTool.Connect();
-                    MySqlParamArray ParamList = new MySqlParamArray();
-                    ParamList.Add("inAccountID", inAccountID);
-                    ParamList.Add("inOrder", inOrder);
-                    ParamList.Add("inItemIndex", inItemIndex);
-                    dbTool.ExcuteNonQuery("sp_SellItem", ParamList);
-                }
+                conn.Open();
+                var param = new DynamicParameters();
+                param.Add("@AccountID", AccountID);
+                param.Add("@Order", Order);
+                param.Add("@ItemIndex", ItemIndex);
+                param.Add("RetVal", direction: ParameterDirection.ReturnValue);
+                conn.Query("dbo.sp_SellItem", param, commandType: CommandType.StoredProcedure);
 
-                return true;
+                return CommonLib.IsSuccess(param.Get<int>("RetVal"));
             }
-            catch
-            { return false; }
         }
 
-        public static List<AvatarModel> GetAvatarList(DataTable AvatarTable)
+        public static List<AvatarModel> _GetAvatarList(DataTable AvatarTable)
         {
             List<AvatarModel> AvatarList = new List<AvatarModel>();
 
@@ -250,71 +239,55 @@ namespace LeafServer
             return AvatarList;
         }
 
-        public static List<InvenModel> GetInvenList(string inAccountID, int inAvatarOrder)
+        public static List<InvenModel> GetInvenList(string AccountID, int inAvatarOrder)
         {
-            try
+            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
             {
-                DataSet DataSet = null;
-                using (DBTool_MySQL dbTool = new DBTool_MySQL(CommonLib.DBConnConfig))
-                {
-                    dbTool.Connect();
-                    MySqlParamArray ParamList = new MySqlParamArray();
-                    ParamList.Add("inAccountID", inAccountID);
-                    ParamList.Add("inOrder", inAvatarOrder);
-                    DataSet = dbTool.ExcuteDataSet("sp_GetInven", ParamList);
-                }
+                conn.Open();
+                var param = new DynamicParameters();
+                param.Add("@AccountID", AccountID);
+                param.Add("@Order", inAvatarOrder);
 
-                List<InvenModel> InvenList = new List<InvenModel>();
+                var result = conn.QueryMultiple("dbo.sp_GetInven", param, commandType: CommandType.StoredProcedure);
+                // TODO : 인벤토리 구성내용 구현
+                /*
+                    List<InvenModel> InvenList = new List<InvenModel>();
 
-                foreach (DataRow DataRow in DataSet.Tables[0].Rows)
-                {
-                    InvenModel objInven = new InvenModel();
-                    objInven.UID = Convert.ToUInt64(DataRow["UID"]);
-                    objInven.ItemIndex = Convert.ToInt32(DataRow["ItemIndex"]);
-                    objInven.Type = Convert.ToInt32(DataRow["Type"]);
-                    InvenList.Add(objInven);
-                    if (InvenList.Count == 25)
-                        break;
-                }
-                return InvenList;
+                    foreach (DataRow DataRow in DataSet.Tables[0].Rows)
+                    {
+                        InvenModel objInven = new InvenModel();
+                        objInven.UID = Convert.ToUInt64(DataRow["UID"]);
+                        objInven.ItemIndex = Convert.ToInt32(DataRow["ItemIndex"]);
+                        objInven.Type = Convert.ToInt32(DataRow["Type"]);
+                        InvenList.Add(objInven);
+                        if (InvenList.Count == 25)
+                            break;
+                    }
+                 */
+                return null;
             }
-            catch
-            { throw; }
         }
 
-        public static AvatarModel CreateAvatar(byte[] inRecvData, string inAccountID)
+        public static AvatarModel CreateAvatar(byte[] inRecvData, string AccountID)
         {
-            try
+            int Character = inRecvData[12];
+            string CharName = string.Empty;
+
+            byte[] Data = new byte[22];
+            for (int i = 0; i < 22; i++)
+                Data[i] = inRecvData[13 + i];
+            CharName = Encoding.Default.GetString(Data).Split('\0')[0];
+
+            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
             {
-                int Character = inRecvData[12];
-                string CharName = string.Empty;
-
-                byte[] Data = new byte[22];
-                for (int i = 0; i < 22; i++)
-                    Data[i] = inRecvData[13 + i];
-                CharName = Encoding.Default.GetString(Data).Split('\0')[0];
-
-                DataSet AvatarData = null;
-                using (DBTool_MySQL dbTool = new DBTool_MySQL(CommonLib.DBConnConfig))
-                {
-                    dbTool.Connect();
-                    MySqlParamArray ParamList = new MySqlParamArray();
-                    ParamList.Add("inAccountID", inAccountID);
-                    ParamList.Add("inCharacterType", Character);
-                    ParamList.Add("inCharacterName", CharName);
-                    AvatarData = dbTool.ExcuteDataSet("sp_CreateAvatar", ParamList);
-                }
-
-                if (AvatarData.Tables.Count > 0)
-                    return AccountManager.GetAvatarList(AvatarData.Tables[0])[0];
+                conn.Open();
+                var param = new DynamicParameters();
+                param.Add("AccountID", AccountID);
+                param.Add("CharacterType", Character);
+                param.Add("CharacterName", CharName);
+                var result = conn.QuerySingle<AvatarModel>("dbo.sp_CreateAvatar", param, commandType: CommandType.StoredProcedure);
+                return result;
             }
-            catch (Exception ex)
-            {
-                if (ex.Source.Contains("MySql.Data") == false)
-                    throw;
-            }
-
-            return null;
         }
     }
 }

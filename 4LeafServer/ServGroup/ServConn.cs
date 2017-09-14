@@ -1,84 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
 namespace LeafServer
 {
-    public class ServConn : IDisposable
+    public class ServConn : DisposeClass
     {
-        private Socket ClientSocket = null;
+        private Socket _clientSocket = null;
         public Thread ConnThread = null;
 
-        /// <summary>
-        /// 서버 포트
-        /// </summary>
-        private int ServerPort = -1;
-
-        public ServConn(int inPort)
+        public ServConn()
         {
             if (LeafConnection.ConnUserList == null)
                 LeafConnection.ConnUserList = new List<NTClient>();
             if (ServChat.ChatRoomList == null)
                 ServChat.ChatRoomList = new List<ChatRoomModel>();
-
-            this.ServerPort = inPort;
         }
 
         ~ServConn()
-        { Dispose(false); }
-
-        public void Dispose()
-        {
-            try
-            {
-                if (this.ClientSocket != null)
-                {
-                    if (this.ClientSocket.Connected == true)
-                        this.ClientSocket.Disconnect(false);
-                    this.ClientSocket.Dispose();
-                    this.ClientSocket = null;
-                }
-                if (this.ConnThread.IsAlive)
-                    ConnThread.Abort();
-
-                Dispose(true);
-
-                GC.SuppressFinalize(this);
-            }
-            catch
-            { throw; }
-        }
-        private bool _alreadyDisposed = false;
-        protected virtual void Dispose(bool inDisposing)
-        {
-            if (_alreadyDisposed == true)
-            {
-                return;
-            }
-
-            if (inDisposing == true)
-            {
-                // managed resource
-            }
-
-            // unmanaged resource
-            // disposed
-
-            _alreadyDisposed = true;
-        }
+        { Dispose(); }
 
         public void ConnServerStart()
         {
-            try
-            {
-                ConnThread = new Thread(new ThreadStart(AcceptClient));
-                ConnThread.IsBackground = true;
-                ConnThread.Start();
-            }
-            catch
-            { throw; }
+            ConnThread = new Thread(new ThreadStart(AcceptClient)) { IsBackground = true };
+            ConnThread.Start();
         }
 
         public void ConnServerStop()
@@ -87,12 +33,15 @@ namespace LeafServer
             {
                 if (ConnThread.IsAlive == false)
                 {
-                    if (this.ClientSocket != null)
+                    if (_clientSocket != null)
                     {
-                        if (this.ClientSocket.Connected == true)
-                            this.ClientSocket.Disconnect(false);
-                        this.ClientSocket.Dispose();
-                        this.ClientSocket = null;
+                        if (_clientSocket.Connected == true)
+                            _clientSocket.Disconnect(false);
+
+                        _clientSocket.Dispose();
+
+                        if (_clientSocket != null)
+                            _clientSocket = null;
                     }
                 }
             }
@@ -106,25 +55,26 @@ namespace LeafServer
         {
             try
             {
-                IPEndPoint ipep = new IPEndPoint(IPAddress.Any, this.ServerPort);
-                ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                ClientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                ClientSocket.Bind(ipep);
-                ClientSocket.Listen(20);
+                IPEndPoint ipep = new IPEndPoint(IPAddress.Any, CommonLib.SERVER_PORT);
+                _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                _clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                _clientSocket.Bind(ipep);
+                _clientSocket.Listen(20);
 
-                while (CommonLib.ServerStatus == true)
+                while (CommonLib.IsON == true)
                 {
-                    Socket Client = ClientSocket.Accept();
+                    Socket Client = _clientSocket.Accept();
 
                     if (Client.Connected)
                         LeafConnection.ConnUserList.Add(new NTClient(Client));
                 }
 
-                if (CommonLib.ServerStatus == false)
+                if (CommonLib.IsON == false)
                 {
-                    ClientSocket.Disconnect(true);
-                    ClientSocket.Dispose();
-                    ClientSocket = null;
+                    _clientSocket.Disconnect(true);
+                    _clientSocket.Dispose();
+                    if (_clientSocket != null)
+                        _clientSocket = null;
                 }
             }
             catch (ThreadInterruptedException)

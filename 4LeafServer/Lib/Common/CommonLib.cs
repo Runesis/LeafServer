@@ -58,8 +58,16 @@ namespace LeafServer
         public static readonly string DBConnConfig = "server=192.168.56.101;uid=root;pwd=runedb;database=4Leaf";
         public static readonly string DBEncryptKey = "NS#4@Leaf&";
         public static readonly int MAX_AVATAR_COUNT = 1;
+        
+        /// <summary>
+        /// Server Port
+        /// </summary>
+        public static readonly UInt16 SERVER_PORT = 47500;
 
-        public static bool ServerStatus = false;
+        /// <summary>
+        /// Server On/Off Status
+        /// </summary>
+        public static bool IsON = false;
 
         public static readonly string WorldMap_Eng = "WorldMap";
         public static readonly string WorldMap_Kor = "아노마라드 상공";

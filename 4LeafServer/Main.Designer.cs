@@ -31,17 +31,17 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.btnServerSwitch = new System.Windows.Forms.Button();
-            this.txtboxLog = new System.Windows.Forms.TextBox();
+            this.txtLog = new System.Windows.Forms.TextBox();
             this.tmrConnUserCount = new System.Windows.Forms.Timer(this.components);
-            this.grboxInfo = new System.Windows.Forms.GroupBox();
-            this.txtboxConnUserCount = new System.Windows.Forms.TextBox();
             this.lblConnUserCount = new System.Windows.Forms.Label();
+            this.txtboxConnUserCount = new System.Windows.Forms.TextBox();
+            this.grboxInfo = new System.Windows.Forms.GroupBox();
             this.grboxInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnServerSwitch
             // 
-            this.btnServerSwitch.Location = new System.Drawing.Point(12, 327);
+            this.btnServerSwitch.Location = new System.Drawing.Point(497, 12);
             this.btnServerSwitch.Name = "btnServerSwitch";
             this.btnServerSwitch.Size = new System.Drawing.Size(75, 23);
             this.btnServerSwitch.TabIndex = 0;
@@ -49,35 +49,34 @@
             this.btnServerSwitch.UseVisualStyleBackColor = true;
             this.btnServerSwitch.Click += new System.EventHandler(this.btnServerSwitch_Click);
             // 
-            // txtboxLog
+            // txtLog
             // 
-            this.txtboxLog.BackColor = System.Drawing.Color.White;
-            this.txtboxLog.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.txtboxLog.Location = new System.Drawing.Point(12, 96);
-            this.txtboxLog.Multiline = true;
-            this.txtboxLog.Name = "txtboxLog";
-            this.txtboxLog.ReadOnly = true;
-            this.txtboxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtboxLog.ShortcutsEnabled = false;
-            this.txtboxLog.Size = new System.Drawing.Size(560, 225);
-            this.txtboxLog.TabIndex = 3;
-            this.txtboxLog.TabStop = false;
+            this.txtLog.BackColor = System.Drawing.Color.White;
+            this.txtLog.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.txtLog.Location = new System.Drawing.Point(12, 96);
+            this.txtLog.MaxLength = 65535;
+            this.txtLog.Multiline = true;
+            this.txtLog.Name = "txtLog";
+            this.txtLog.ReadOnly = true;
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtLog.ShortcutsEnabled = false;
+            this.txtLog.Size = new System.Drawing.Size(560, 254);
+            this.txtLog.TabIndex = 3;
+            this.txtLog.TabStop = false;
             // 
             // tmrConnUserCount
             // 
-            this.tmrConnUserCount.Interval = 500;
+            this.tmrConnUserCount.Interval = 300;
             this.tmrConnUserCount.Tick += new System.EventHandler(this.tmrConnUserCount_Tick);
             // 
-            // grboxInfo
+            // lblConnUserCount
             // 
-            this.grboxInfo.Controls.Add(this.txtboxConnUserCount);
-            this.grboxInfo.Controls.Add(this.lblConnUserCount);
-            this.grboxInfo.Location = new System.Drawing.Point(12, 12);
-            this.grboxInfo.Name = "grboxInfo";
-            this.grboxInfo.Size = new System.Drawing.Size(163, 78);
-            this.grboxInfo.TabIndex = 4;
-            this.grboxInfo.TabStop = false;
-            this.grboxInfo.Text = "정보";
+            this.lblConnUserCount.AutoSize = true;
+            this.lblConnUserCount.Location = new System.Drawing.Point(6, 17);
+            this.lblConnUserCount.Name = "lblConnUserCount";
+            this.lblConnUserCount.Size = new System.Drawing.Size(41, 12);
+            this.lblConnUserCount.TabIndex = 0;
+            this.lblConnUserCount.Text = "접속자";
             // 
             // txtboxConnUserCount
             // 
@@ -93,14 +92,16 @@
             this.txtboxConnUserCount.Text = "0";
             this.txtboxConnUserCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // lblConnUserCount
+            // grboxInfo
             // 
-            this.lblConnUserCount.AutoSize = true;
-            this.lblConnUserCount.Location = new System.Drawing.Point(6, 17);
-            this.lblConnUserCount.Name = "lblConnUserCount";
-            this.lblConnUserCount.Size = new System.Drawing.Size(41, 12);
-            this.lblConnUserCount.TabIndex = 0;
-            this.lblConnUserCount.Text = "접속자";
+            this.grboxInfo.Controls.Add(this.txtboxConnUserCount);
+            this.grboxInfo.Controls.Add(this.lblConnUserCount);
+            this.grboxInfo.Location = new System.Drawing.Point(12, 12);
+            this.grboxInfo.Name = "grboxInfo";
+            this.grboxInfo.Size = new System.Drawing.Size(131, 78);
+            this.grboxInfo.TabIndex = 4;
+            this.grboxInfo.TabStop = false;
+            this.grboxInfo.Text = "정보";
             // 
             // frmMain
             // 
@@ -108,7 +109,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 362);
             this.Controls.Add(this.grboxInfo);
-            this.Controls.Add(this.txtboxLog);
+            this.Controls.Add(this.txtLog);
             this.Controls.Add(this.btnServerSwitch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -127,11 +128,11 @@
         #endregion
 
         private System.Windows.Forms.Button btnServerSwitch;
-        private System.Windows.Forms.TextBox txtboxLog;
+        private System.Windows.Forms.TextBox txtLog;
         private System.Windows.Forms.Timer tmrConnUserCount;
-        private System.Windows.Forms.GroupBox grboxInfo;
-        private System.Windows.Forms.TextBox txtboxConnUserCount;
         private System.Windows.Forms.Label lblConnUserCount;
+        private System.Windows.Forms.TextBox txtboxConnUserCount;
+        private System.Windows.Forms.GroupBox grboxInfo;
     }
 }
 

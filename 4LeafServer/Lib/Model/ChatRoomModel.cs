@@ -2,6 +2,7 @@
 
 namespace LeafServer
 {
+    // TODO : 클라이언트 측, 채팅방 구현 이전에는 해당 클래스는 의미가 없음.
     public class ChatRoomModel : DisposeClass
     {
         ~ChatRoomModel()
@@ -18,15 +19,15 @@ namespace LeafServer
 
         public List<NTClient> UserList;
 
-        public ChatRoomModel(int inRoomIndex, string inTitle, string inPassword, int inRoof, int inInterior, int inMaxCount, NTClient RoomOwner)
+        public ChatRoomModel(int RoomIndex, string Title, string Password, int Roof, int Interior, int MaxCount, NTClient RoomOwner)
         {
-            RoomIndex = inRoomIndex;
-            Title = inTitle;
-            Password = inPassword;
+            this.RoomIndex = RoomIndex;
+            this.Title = Title;
+            this.Password = Password;
+            this.Roof = Roof;
+            this.Interior = Interior;
 
-            Roof = inRoof;
-            Interior = inInterior;
-            MaxUser = inMaxCount;
+            MaxUser = MaxCount;
             Lock = false;
 
             Owner = RoomOwner.UserInfo.AvatarList.Find(r => r.Order == RoomOwner.UserInfo.AvatarOrder).CharacterName;

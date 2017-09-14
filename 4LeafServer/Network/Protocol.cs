@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LeafServer
 {
-    public class _LeafProtocol
+    public class LeafProtocol
     {
         public byte[] Dummy()
         { return new byte[6]; }
@@ -41,7 +41,6 @@ namespace LeafServer
 
             SendData = new byte[SendDataLength];
 
-            //SendData[0] = Convert.ToByte(1);
             SendData[0] = inRecvData[0];
             SendData[1] = inRecvData[1];
             SendData[2] = DataLength[0];
@@ -117,10 +116,9 @@ namespace LeafServer
             SendData[7] = inRecvData[7];
 
             for (int i = 0; i < MessageLength; i++)
-            {
                 SendData[12 + i] = MessageData[i];
-            }
             SendData[SendData.Length - 1] = Convert.ToByte(0);
+
             return SendData;
         }
 
@@ -134,9 +132,7 @@ namespace LeafServer
             string CheckID = string.Empty;
 
             for (int i = 0; i < inRecvData.Length - 12; i++)
-            {
                 BuffCheckID[i] = inRecvData[12 + i];
-            }
 
             CheckID = Encoding.Default.GetString(BuffCheckID).Split('\0')[0];
 
@@ -199,9 +195,7 @@ namespace LeafServer
             {
                 SendData[8] = Convert.ToByte(3);
                 for (int i = 0; i < MessageLength; i++)
-                {
                     SendData[12 + i] = MessageData[i];
-                }
             }
 
             return SendData;
@@ -627,9 +621,9 @@ namespace LeafServer
                     SeriesCheck = true;
                     bool CardRank = Convert.ToBoolean(inSeries);
                     if (CardRank)
-                        CardShopList = DataContainer.GetCardList().FindAll(r => r.Rank == "Valuable");
+                        CardShopList = DataContainer.GetCardList.FindAll(r => r.Rank == "Valuable");
                     else
-                        CardShopList = DataContainer.GetCardList().FindAll(r => r.Rank == "Normal");
+                        CardShopList = DataContainer.GetCardList.FindAll(r => r.Rank == "Normal");
 
                     ShopItemList = new List<object>(CardShopList);
 
@@ -785,7 +779,7 @@ namespace LeafServer
 
                     break;
 
-                #endregion
+                    #endregion
             }
 
             SendDataLength = 9 + (ShopItemList.Count * 4);
@@ -1235,7 +1229,7 @@ namespace LeafServer
             SendData[6] = inRecvData[6];
             SendData[7] = inRecvData[7];
 
-            UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).SetCostume(this.CheckedInven(inRecvData, 13, 4));
+            UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).SetCostume(CheckedInven(inRecvData, 13, 4));
 
             if (AccountManager.UpdateCostume(UserInfo.AccountID, UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder)))
                 SendData[8] = Convert.ToByte(0);
@@ -2235,14 +2229,5 @@ namespace LeafServer
 
             return new ChatRoomModel(inRoomIndex, Title, Password, Roof, Interior, MaxCount, Owner);
         }
-
-        //public byte[] _Temp(byte[] inRecvData)
-        //{
-        //    byte[] SendData = null;
-        //    byte[] DataLength = null;
-        //    int SendDataLength = 0;
-
-        //    return SendData;
-        //}
     }
 }

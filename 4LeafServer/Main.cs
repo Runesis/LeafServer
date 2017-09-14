@@ -3,57 +3,49 @@ using System.Windows.Forms;
 
 namespace LeafServer
 {
-    public delegate void add_msg();                          // 디버깅 정보 출력 
-
     public partial class frmMain : Form
     {
         private ServConn ConnectionServer = null;
-        private string LogMessage = null;
 
         public frmMain()
         {
             InitializeComponent();
 
             if (DataContainer.LoadContainer())
-            { Add_MSG("Data Loading Complete."); }
+            { Log("Data Loading Complete."); }
             else
-            { Add_MSG("Data Load Error."); }
+            { Log("Data Load Error."); }
         }
 
         #region Log Message Print
 
-        /// <summary>
-        /// 디버깅창에 메시지 출력
-        /// </summary>
-        /// <param name="msg">출력할 메시지</param>		
-        public void Add_MSG(string strMsg)
+        public void Log(string logText)
         {
-            this.LogMessage = strMsg;
-            if (txtboxLog.InvokeRequired)
-            {
-                add_msg addmsg = new add_msg(AddMSG);
-                this.Invoke(addmsg);
-            }
-            else
-            {
-                lock (this.txtboxLog)
-                {
-                    this.txtboxLog.AppendText("[" + DateTime.Now + "]" + " : " + this.LogMessage + "\r\n");
-                    this.txtboxLog.ScrollToCaret();
-                }
-            }
+            if (String.IsNullOrEmpty(logText))
+                return;
+
+            LogAppendText(logText);
         }
 
-        /// <summary>
-        /// 디버깅 창 Invoke함수
-        /// </summary>
-        private void AddMSG()
+        public void Log(string targetText, params object[] arg)
         {
-            lock (this.txtboxLog)
-            {
-                this.txtboxLog.AppendText("[" + DateTime.Now + "]" + " : " + this.LogMessage + "\r\n");
-                this.txtboxLog.ScrollToCaret();
-            }
+            if (String.IsNullOrEmpty(targetText))
+                return;
+
+            LogAppendText(String.Format(targetText, arg));
+        }
+
+        private void LogAppendText(string logText)
+        {
+            if (txtLog.Text.Length >= UInt16.MaxValue)
+                txtLog.Clear();
+
+            string Log = String.Format("[" + DateTime.Now + "]" + " : " + logText + "\r\n");
+
+            if (InvokeRequired)
+                Invoke((MethodInvoker)delegate { txtLog.AppendText(Log); });
+            else
+                txtLog.AppendText(Log);
         }
 
         #endregion
@@ -67,22 +59,12 @@ namespace LeafServer
         {
             try
             {
-                if (CommonLib.ServerStatus == false)
+                if (CommonLib.IsON == false)
                 {
-                    int Port = -1;
-                    if (txtboxPort.Text.Length < 1)
+                    if (DataContainer.GetItemList == null || DataContainer.GetCardList == null)
                     {
-                        this.Add_MSG("포트가 올바르지 않습니다.");
+                        MessageBox.Show("데이터가 올바르게 로딩되지 않았습니다.", "경고", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
-                    }
-                    else
-                    {
-                        Port = Convert.ToInt32(txtboxPort.Text);
-                        if (Port > 65535 || Port < 1)
-                        {
-                            this.Add_MSG("포트가 올바르지 않습니다.");
-                            return;
-                        }
                     }
 
                     if (ConnectionServer != null)
@@ -91,43 +73,42 @@ namespace LeafServer
                         ConnectionServer = null;
                     }
 
-                    ConnectionServer = new ServConn(Port);
+                    ConnectionServer = new ServConn();
                     ConnectionServer.ConnServerStart();
 
-                    CommonLib.ServerStatus = true;
+                    CommonLib.IsON = true;
 
+                    btnServerSwitch.BackColor = System.Drawing.Color.SeaShell;
                     btnServerSwitch.Text = "Closed";
-                    txtboxPort.Enabled = false;
                     tmrConnUserCount.Enabled = true;
 
-                    this.Add_MSG("Server Open. // Port = " + Port.ToString());
+                    Log("Server Open.");
                 }
                 else
                 {
-                    CommonLib.ServerStatus = false;
+                    CommonLib.IsON = false;
 
                     ConnectionServer.ConnServerStop();
-                    //ConnectionServer.Dispose();
                     if (ConnectionServer != null)
                         ConnectionServer = null;
 
+                    btnServerSwitch.BackColor = System.Drawing.Color.Azure;
                     btnServerSwitch.Text = "Open";
-                    txtboxPort.Enabled = true;
-
                     tmrConnUserCount.Enabled = false;
+
                     txtboxConnUserCount.Text = "0";
 
-                    this.Add_MSG("Server Closed");
+                    Log("Server Closed.");
                 }
             }
             catch (Exception ex)
-            { this.Add_MSG("Exception Error!! - " + ex.Message.ToString() + " // " + ex.StackTrace.ToString()); }
+            { Log("Exception Error!! - " + ex.Message.ToString() + " // " + ex.StackTrace.ToString()); }
         }
 
         private void tmrConnUserCount_Tick(object sender, EventArgs e)
         {
-            LeafConnection.ConnUserList.RemoveAll(r => r.ClientSocket == null);
             LeafConnection.ConnUserList.RemoveAll(r => r.ClientSocket.Connected == false);
+            LeafConnection.ConnUserList.RemoveAll(r => r.ClientSocket == null);
 
             txtboxConnUserCount.Text = LeafConnection.ConnUserList.Count.ToString();
         }

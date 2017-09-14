@@ -6,37 +6,32 @@ using System.Threading;
 
 namespace LeafServer
 {
-    public class NTClient : IDisposable
+    public class NTClient : DisposeClass
     {
-        public string IPAddr;
+        private Thread _mainThread = null;
+        private LeafProtocol _protocol = null;
+        private Dictionary<int, string> _areaPath = null;
+
         public int AreaIndex = -1;
         public int ChatRoomIndex = -1;
         public bool EnterRoom = false;
+        public string IPAddr = string.Empty;
         public string CurrentArea = string.Empty;
 
         public UserModel UserInfo = null;
 
         public Socket ClientSocket = null;
-        private Thread MainThread = null;
-        private _LeafProtocol _Protocol = null;
-        private Dictionary<int, string> AreaPath = null;
 
         public NTClient(Socket Client)
         {
-            try
-            {
-                this.AreaPath = new Dictionary<int, string>();
-                this.CurrentArea = CommonLib.WorldMap_Kor;
+            ClientSocket = Client;
+            CurrentArea = CommonLib.WorldMap_Kor;
+            IPAddr = ((IPEndPoint)Client.RemoteEndPoint).Address.ToString();
 
-                this._Protocol = new _LeafProtocol();
-                this.ClientSocket = Client;
-                this.IPAddr = ((IPEndPoint)Client.RemoteEndPoint).Address.ToString();
-                MainThread = new Thread(new ThreadStart(Receiver));
-                MainThread.IsBackground = true;
-                MainThread.Start();
-            }
-            catch
-            { throw; }
+            _areaPath = new Dictionary<int, string>();
+            _protocol = new LeafProtocol();
+            _mainThread = new Thread(new ThreadStart(Receiver)) { IsBackground = true };
+            _mainThread.Start();
         }
 
         private void Receiver()
@@ -58,7 +53,7 @@ namespace LeafServer
                                 switch (RecvData[4])
                                 {
                                     case 1:
-                                        byte[] SendData = _Protocol.SubCode(RecvData);
+                                        byte[] SendData = _protocol.SubCode(RecvData);
                                         ClientSocket.Send(SendData);
                                         if (SendData[4] == 2)
                                         {
@@ -66,22 +61,22 @@ namespace LeafServer
                                             {
                                                 // 방 목록
                                                 if (SendData[6] == 10 && CommonLib.CheckChatRegion(CommonLib.AreaConvertEng(CurrentArea)))
-                                                    ClientSocket.Send(_Protocol.ChatRoomList());
+                                                    ClientSocket.Send(_protocol.ChatRoomList());
                                                 // 지역 기후 설정
                                                 else if (SendData[6] == 11 && CommonLib.CheckChatRegion(CommonLib.AreaConvertEng(CurrentArea)))
                                                 {
-                                                    ClientSocket.Send(_Protocol.AreaWeather(CommonLib.AreaWeather(CurrentArea)));
-                                                    _Protocol.EnterAreaUserList(RecvData, CurrentArea);
+                                                    ClientSocket.Send(_protocol.AreaWeather(CommonLib.AreaWeather(CurrentArea)));
+                                                    _protocol.EnterAreaUserList(RecvData, CurrentArea);
                                                 }
                                                 else
-                                                    _Protocol.EnterAreaUserList(RecvData, CurrentArea);
+                                                    _protocol.EnterAreaUserList(RecvData, CurrentArea);
 
                                                 Thread.Sleep(5);
                                             }
                                         }
                                         break;
                                     case 4: // Client DisConnect
-                                        ClientSocket.Send(_Protocol.ConnClose());
+                                        ClientSocket.Send(_protocol.ConnClose());
                                         ClientSocket.Disconnect(false);
                                         ClientSocket.Dispose();
                                         ClientSocket = null;
@@ -96,29 +91,29 @@ namespace LeafServer
                                 switch (RecvData[8])
                                 {
                                     case 0: // 공지요청
-                                        ClientSocket.Send(_Protocol.Notice(RecvData));
+                                        ClientSocket.Send(_protocol.Notice(RecvData));
                                         break;
                                     case 1: // 로그인
-                                        ClientSocket.Send(_Protocol.Login(RecvData, out UserInfo));
+                                        ClientSocket.Send(_protocol.Login(RecvData, out UserInfo));
                                         break;
                                     case 3: // 가입요청
-                                        ClientSocket.Send(_Protocol.SignUp(RecvData));
+                                        ClientSocket.Send(_protocol.SignUp(RecvData));
                                         break;
                                     case 4: // ID 검사
-                                        ClientSocket.Send(_Protocol.CheckID(RecvData));
+                                        ClientSocket.Send(_protocol.CheckID(RecvData));
                                         break;
                                     case 5: // 회원등록
-                                        ClientSocket.Send(_Protocol.Register(RecvData));
+                                        ClientSocket.Send(_protocol.Register(RecvData));
                                         break;
                                     case 6: // 캐릭터 생성
                                         // 캐릭터 정보
-                                        ClientSocket.Send(_Protocol.CreateCharacter(RecvData, UserInfo.AccountID));
+                                        ClientSocket.Send(_protocol.CreateCharacter(RecvData, UserInfo.AccountID));
                                         break;
 
                                     #region 7 : 월드 접속
                                     case 7:
                                         if (UserInfo.AvatarList.Count < 1 || UserInfo.AvatarList.Exists(r => r.Order == Convert.ToInt32(RecvData[12])) == false)
-                                            ClientSocket.Send(_Protocol.Error(RecvData, 6));
+                                            ClientSocket.Send(_protocol.Error(RecvData, 6));
                                         else
                                         {
                                             int AvatarOrder = Convert.ToInt32(RecvData[12]);
@@ -132,12 +127,12 @@ namespace LeafServer
                                             TimeSpan SpanLogin = UserInfo.LastLogin - DateTime.Now;
                                             if (SpanLogin.TotalDays > 1)
                                             {
-                                                ClientSocket.Send(_Protocol.DayGP(RecvData, UserInfo));
+                                                ClientSocket.Send(_protocol.DayGP(RecvData, UserInfo));
                                                 Thread.Sleep(5);
                                             }
 
                                             // 월드 접속
-                                            ClientSocket.Send(_Protocol.EnterWorld(RecvData, UserInfo));
+                                            ClientSocket.Send(_protocol.EnterWorld(RecvData, UserInfo));
                                         }
 
                                         break;
@@ -153,16 +148,16 @@ namespace LeafServer
                                         { }
 
                                         // 접속 종료
-                                        ClientSocket.Send(_Protocol.Disconnection(RecvData, Convert.ToInt32(tSpan.TotalSeconds), ConnRewardGP));
+                                        ClientSocket.Send(_protocol.Disconnection(RecvData, Convert.ToInt32(tSpan.TotalSeconds), ConnRewardGP));
 
-                                        ClientSocket.Send(_Protocol.ConnClose());
+                                        ClientSocket.Send(_protocol.ConnClose());
                                         ClientSocket.Disconnect(false);
                                         ClientSocket.Dispose();
                                         ClientSocket = null;
 
                                         break;
 
-                                    #endregion
+                                        #endregion
                                 }
                                 break;
 
@@ -170,14 +165,14 @@ namespace LeafServer
 
                             #region 2 : 지역 이동
                             case 2:
-                                if (AreaPath.Count > 1)
+                                if (_areaPath.Count > 1)
                                 {
-                                    CurrentArea = AreaPath[AreaPath.Count - 1];
-                                    _Protocol.LeaveAreaUserList(UserInfo.AvatarList[UserInfo.AvatarOrder].CharacterName, CurrentArea);
+                                    CurrentArea = _areaPath[_areaPath.Count - 1];
+                                    _protocol.LeaveAreaUserList(UserInfo.AvatarList[UserInfo.AvatarOrder].CharacterName, CurrentArea);
                                 }
 
-                                ClientSocket.Send(_Protocol.MoveArea(RecvData, ref AreaPath));
-                                CurrentArea = AreaPath[AreaPath.Count - 1];
+                                ClientSocket.Send(_protocol.MoveArea(RecvData, ref _areaPath));
+                                CurrentArea = _areaPath[_areaPath.Count - 1];
                                 AreaIndex = CommonLib.GetAreaIndex(CurrentArea);
                                 break;
 
@@ -194,10 +189,10 @@ namespace LeafServer
 
                                     #region 7 : 인벤토리 설정
                                     case 7:
-                                        ClientSocket.Send(_Protocol.SetCostume(RecvData, UserInfo));
+                                        ClientSocket.Send(_protocol.SetCostume(RecvData, UserInfo));
                                         break;
 
-                                    #endregion
+                                        #endregion
                                 }
                                 break;
 
@@ -206,7 +201,7 @@ namespace LeafServer
                                 {
                                     #region 0 : 채팅 메세지
                                     case 0:
-                                        _Protocol.SendChatMessage(RecvData, CurrentArea);
+                                        _protocol.SendChatMessage(RecvData, CurrentArea);
                                         break;
 
                                     #endregion
@@ -217,7 +212,7 @@ namespace LeafServer
                                         if (RecvData.Length > 9)
                                             MountType = RecvData[9];
 
-                                        ClientSocket.Send(_Protocol.ShopList(CurrentArea, RecvData[8], MountType, UserInfo.Gender));
+                                        ClientSocket.Send(_protocol.ShopList(CurrentArea, RecvData[8], MountType, UserInfo.Gender));
 
                                         break;
 
@@ -226,11 +221,11 @@ namespace LeafServer
                                     #region 2 : 아이템 선택
                                     case 2:
                                         if (CurrentArea == "매직 카덴")
-                                            ClientSocket.Send(_Protocol.ShopACItemInfo(RecvData, true));
+                                            ClientSocket.Send(_protocol.ShopACItemInfo(RecvData, true));
                                         else if (CurrentArea == "캐즈팝")
-                                            ClientSocket.Send(_Protocol.ShopACItemInfo(RecvData));
+                                            ClientSocket.Send(_protocol.ShopACItemInfo(RecvData));
                                         else
-                                            ClientSocket.Send(_Protocol.ShopItemInfo(RecvData));
+                                            ClientSocket.Send(_protocol.ShopItemInfo(RecvData));
                                         break;
 
                                     #endregion
@@ -238,18 +233,18 @@ namespace LeafServer
                                     #region 3, 4 : 아이템 구매, 판매
                                     case 3:
                                         if (CurrentArea == "매직 카덴")
-                                            ClientSocket.Send(_Protocol.BuyACItem(RecvData, UserInfo, true));
+                                            ClientSocket.Send(_protocol.BuyACItem(RecvData, UserInfo, true));
                                         else if (CurrentArea == "캐즈팝")
-                                            ClientSocket.Send(_Protocol.BuyACItem(RecvData, UserInfo));
+                                            ClientSocket.Send(_protocol.BuyACItem(RecvData, UserInfo));
                                         break;
 
                                     case 4:
                                         if (CurrentArea == "매직 카덴")
-                                            ClientSocket.Send(_Protocol.SellACItem(RecvData, UserInfo, true));
+                                            ClientSocket.Send(_protocol.SellACItem(RecvData, UserInfo, true));
                                         else if (CurrentArea == "캐즈팝")
-                                            ClientSocket.Send(_Protocol.SellACItem(RecvData, UserInfo));
+                                            ClientSocket.Send(_protocol.SellACItem(RecvData, UserInfo));
                                         else
-                                            ClientSocket.Send(_Protocol.BuyItem(RecvData, UserInfo));
+                                            ClientSocket.Send(_protocol.BuyItem(RecvData, UserInfo));
                                         break;
 
                                     #endregion
@@ -257,9 +252,9 @@ namespace LeafServer
                                     #region 5 : 아이템 판매
                                     case 5:
                                         if (CurrentArea == "매직 카덴")
-                                            ClientSocket.Send(_Protocol.ShopItemInfo(RecvData, true));
+                                            ClientSocket.Send(_protocol.ShopItemInfo(RecvData, true));
                                         else
-                                            ClientSocket.Send(_Protocol.SellItem(RecvData, UserInfo));
+                                            ClientSocket.Send(_protocol.SellItem(RecvData, UserInfo));
                                         break;
 
                                     #endregion
@@ -275,24 +270,24 @@ namespace LeafServer
                                 {
                                     #region 0 : 채팅방 입장 요청
                                     case 0:
-                                        _Protocol.LeaveAreaUserList(UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).CharacterName, CurrentArea);
+                                        _protocol.LeaveAreaUserList(UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).CharacterName, CurrentArea);
                                         ChatRoomIndex = Convert.ToInt32(RecvData[8]);
                                         EnterRoom = true;
-                                        ClientSocket.Send(_Protocol.EnterRoom(UserInfo, ChatRoomIndex));
+                                        ClientSocket.Send(_protocol.EnterRoom(UserInfo, ChatRoomIndex));
                                         break;
 
                                     #endregion
 
                                     #region 1 : 채팅방 생성 요청
                                     case 1:
-                                        _Protocol.CreateChatRoom(RecvData, UserInfo, CurrentArea, AreaIndex);
+                                        _protocol.CreateChatRoom(RecvData, UserInfo, CurrentArea, AreaIndex);
                                         break;
 
                                     #endregion
 
                                     #region 2 : 방 생성 취소
                                     case 2:
-                                        _Protocol.CancelRoomCreate(RecvData, CurrentArea, ChatRoomIndex);
+                                        _protocol.CancelRoomCreate(RecvData, CurrentArea, ChatRoomIndex);
                                         ChatRoomIndex = -1;
                                         break;
 
@@ -300,11 +295,11 @@ namespace LeafServer
 
                                     #region 3 : 채팅방 생성
                                     case 3:
-                                        _Protocol.BuildChatRoom(RecvData, CurrentArea, ChatRoomIndex, this);
+                                        _protocol.BuildChatRoom(RecvData, CurrentArea, ChatRoomIndex, this);
                                         Thread.Sleep(5);
                                         // 채팅방 입장
                                         EnterRoom = true;
-                                        ClientSocket.Send(_Protocol.EnterRoom(UserInfo, ChatRoomIndex));
+                                        ClientSocket.Send(_protocol.EnterRoom(UserInfo, ChatRoomIndex));
 
                                         break;
 
@@ -312,10 +307,10 @@ namespace LeafServer
 
                                     #region 4 : 채팅 메세지
                                     case 4:
-                                        _Protocol.SendChatMessage(RecvData, CurrentArea);
+                                        _protocol.SendChatMessage(RecvData, CurrentArea);
                                         break;
 
-                                    #endregion
+                                        #endregion
                                 }
                                 break;
                             default:
@@ -325,52 +320,13 @@ namespace LeafServer
                 }
 
                 if (ClientSocket == null)
-                    this.Dispose();
+                    Dispose();
             }
             catch
-            {
-                //ClientSocket.Send(_Protocol.Error(_RecvData, 1));
-                //Thread.Sleep(5);
-                //ClientSocket.Send(_Protocol.ConnClose());
-                //ClientSocket.Disconnect(false);
-                //ClientSocket.Dispose();
-                //ClientSocket = null;
-                throw;
-            }
+            { throw; }
         }
 
         ~NTClient()
-        { Dispose(false); }
-
-        public void Dispose()
-        {
-            if (ClientSocket != null)
-            {
-                ClientSocket.Dispose();
-                ClientSocket = null;
-            }
-
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
-        }
-        private bool _alreadyDisposed = false;
-        protected virtual void Dispose(bool inDisposing)
-        {
-            if (_alreadyDisposed == true)
-            {
-                return;
-            }
-
-            if (inDisposing == true)
-            {
-                // managed resource
-            }
-
-            // unmanaged resource
-            // disposed
-
-            _alreadyDisposed = true;
-        }
+        { Dispose(); }
     }
 }
