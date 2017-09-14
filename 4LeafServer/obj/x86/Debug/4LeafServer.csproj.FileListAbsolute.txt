@@ -1,0 +1,9 @@
+D:\NS\4LeafServer\4LeafServer\bin\Debug\4LeafServer.exe
+D:\NS\4LeafServer\4LeafServer\bin\Debug\4LeafServer.pdb
+D:\NS\4LeafServer\4LeafServer\obj\x86\Debug\_4LeafServer.frmMain.resources
+D:\NS\4LeafServer\4LeafServer\obj\x86\Debug\_4LeafServer.Properties.Resources.resources
+D:\NS\4LeafServer\4LeafServer\obj\x86\Debug\4LeafServer.csproj.GenerateResource.Cache
+D:\NS\4LeafServer\4LeafServer\obj\x86\Debug\4LeafServer.exe
+D:\NS\4LeafServer\4LeafServer\obj\x86\Debug\4LeafServer.pdb
+D:\NS\4LeafServer\4LeafServer\obj\x86\Debug\4LeafServer.csprojResolveAssemblyReference.cache
+D:\NS\4LeafServer\4LeafServer\bin\Debug\SMDBTool.dll
