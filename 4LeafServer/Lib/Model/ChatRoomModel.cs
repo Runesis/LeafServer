@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace _4LeafServer
+namespace LeafServer
 {
-    public class ChatRoom : BaseClass
+    public class ChatRoomModel : DisposeClass
     {
-        ~ChatRoom()
+        ~ChatRoomModel()
         { Dispose(); }
 
         public int RoomIndex { get; set; }
@@ -18,7 +18,7 @@ namespace _4LeafServer
 
         public List<NTClient> UserList;
 
-        public ChatRoom(int inRoomIndex, string inTitle, string inPassword, int inRoof, int inInterior, int inMaxCount, NTClient RoomOwner)
+        public ChatRoomModel(int inRoomIndex, string inTitle, string inPassword, int inRoof, int inInterior, int inMaxCount, NTClient RoomOwner)
         {
             RoomIndex = inRoomIndex;
             Title = inTitle;

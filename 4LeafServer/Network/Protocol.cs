@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace _4LeafServer
+namespace LeafServer
 {
     public class _LeafProtocol
     {
@@ -207,7 +207,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] Login(byte[] inRecvData, out User outUserInfo)
+        public byte[] Login(byte[] inRecvData, out UserModel outUserInfo)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -217,7 +217,7 @@ namespace _4LeafServer
             string AccountID = string.Empty;
             string Password = string.Empty;
 
-            outUserInfo = new User();
+            outUserInfo = new UserModel();
 
             Data = new byte[inRecvData.Length - 12];
             for (int i = 0; i < inRecvData[12]; i++)
@@ -329,7 +329,7 @@ namespace _4LeafServer
             #endregion
         }
 
-        public byte[] UserData(byte[] inRecvData, User UserInfo)
+        public byte[] UserData(byte[] inRecvData, UserModel UserInfo)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -391,7 +391,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] EnterWorld(byte[] inRecvData, User UserInfo)
+        public byte[] EnterWorld(byte[] inRecvData, UserModel UserInfo)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -458,7 +458,7 @@ namespace _4LeafServer
             // RecvData[12]                   - 캐릭터 구분 ( 1 byte)
             // RecvData[13] ~ inRecvData[35]  - 캐릭터 이름 (22 byte)
             // 아바타 정보     - [13] / 128
-            Avatar CreateAvater = AccountManager.CreateAvatar(inRecvData, inAccountID);
+            AvatarModel CreateAvater = AccountManager.CreateAvatar(inRecvData, inAccountID);
             if (CreateAvater == null)
             {
                 SendData[8] = Convert.ToByte(1);
@@ -473,7 +473,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] DayGP(byte[] inRecvData, User UserInfo)
+        public byte[] DayGP(byte[] inRecvData, UserModel UserInfo)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -616,8 +616,8 @@ namespace _4LeafServer
             string AreaName_Eng = CommonLib.AreaConvertEng(inAreaName_Kor);
 
             List<object> ShopItemList = null;
-            List<ItemInfo> ItemShopList = null;
-            List<CardInfo> CardShopList = null;
+            List<ItemModel> ItemShopList = null;
+            List<CardModel> CardShopList = null;
 
             switch (inAreaName_Kor)
             {
@@ -803,7 +803,7 @@ namespace _4LeafServer
             if (SeriesCheck)
                 SendData[DataIndex++] = Convert.ToByte(ShopItemList.Count);
 
-            foreach (ShopBase Item in ShopItemList)
+            foreach (ShopBaseModel Item in ShopItemList)
             {
                 Data = BitConverter.GetBytes(Item.Index);
                 SendData[DataIndex++] = Data[0];
@@ -842,7 +842,7 @@ namespace _4LeafServer
             else
                 SendData[4] = Convert.ToByte(7);
 
-            ShopBase SelectItem = null;
+            ShopBaseModel SelectItem = null;
             if (UsedPrice)
                 SelectItem = DataContainer.FindCard(ItemIndex);
             else
@@ -891,7 +891,7 @@ namespace _4LeafServer
 
             SendData[4] = Convert.ToByte(8);
 
-            ShopBase SelectItem = null;
+            ShopBaseModel SelectItem = null;
             if (inRecvData.Length > 9)
                 SelectItem = DataContainer.FindCard(ItemIndex);
             else
@@ -919,7 +919,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] BuyItem(byte[] inRecvData, User UserInfo)
+        public byte[] BuyItem(byte[] inRecvData, UserModel UserInfo)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -930,8 +930,8 @@ namespace _4LeafServer
             Data[1] = inRecvData[9];
 
             int ItemIndex = BitConverter.ToInt32(Data, 0);
-            ItemInfo SelectItem = DataContainer.FindItem(ItemIndex);
-            Avatar AvatarInfo = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder);
+            ItemModel SelectItem = DataContainer.FindItem(ItemIndex);
+            AvatarModel AvatarInfo = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder);
 
             SendDataLength = 12;
             DataLength = ConvertLengthtoByte(SendDataLength);
@@ -990,7 +990,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] BuyACItem(byte[] inRecvData, User UserInfo, bool CardShop = false)
+        public byte[] BuyACItem(byte[] inRecvData, UserModel UserInfo, bool CardShop = false)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -1001,9 +1001,9 @@ namespace _4LeafServer
             Data[1] = inRecvData[9];
 
             int ItemIndex = BitConverter.ToInt32(Data, 0);
-            Avatar AvatarInfo = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder);
+            AvatarModel AvatarInfo = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder);
 
-            ShopBase SelectItem = null;
+            ShopBaseModel SelectItem = null;
             if (CardShop)
             {
                 DataContainer.FindCard(ItemIndex).Quantity--;
@@ -1073,7 +1073,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] SellItem(byte[] inRecvData, User UserInfo)
+        public byte[] SellItem(byte[] inRecvData, UserModel UserInfo)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -1081,7 +1081,7 @@ namespace _4LeafServer
 
             int SelectIndex = Convert.ToInt32(inRecvData[8]) - 10;
 
-            Avatar AvatarInfo = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder);
+            AvatarModel AvatarInfo = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder);
 
             SendDataLength = 12;
             DataLength = ConvertLengthtoByte(SendDataLength);
@@ -1102,7 +1102,7 @@ namespace _4LeafServer
                 return SendData;
             }
 
-            ItemInfo SelectItem = DataContainer.FindItem(AvatarInfo.Inven[SelectIndex].ItemIndex);
+            ItemModel SelectItem = DataContainer.FindItem(AvatarInfo.Inven[SelectIndex].ItemIndex);
 
             if (AccountManager.SellItem(UserInfo.AccountID, UserInfo.AvatarOrder, SelectItem.Index) == false)
             {
@@ -1142,7 +1142,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] SellACItem(byte[] inRecvData, User UserInfo, bool CardShop = false)
+        public byte[] SellACItem(byte[] inRecvData, UserModel UserInfo, bool CardShop = false)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -1150,7 +1150,7 @@ namespace _4LeafServer
 
             int SelectIndex = Convert.ToInt32(inRecvData[8]) - 10;
 
-            Avatar AvatarInfo = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder);
+            AvatarModel AvatarInfo = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder);
 
             SendDataLength = 12;
             DataLength = ConvertLengthtoByte(SendDataLength);
@@ -1171,7 +1171,7 @@ namespace _4LeafServer
                 return SendData;
             }
 
-            ShopBase SelectItem = null;
+            ShopBaseModel SelectItem = null;
             if (CardShop)
                 SelectItem = DataContainer.FindCard(AvatarInfo.Inven[SelectIndex].ItemIndex);
             else
@@ -1215,7 +1215,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] SetCostume(byte[] inRecvData, User UserInfo)
+        public byte[] SetCostume(byte[] inRecvData, UserModel UserInfo)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -1623,7 +1623,7 @@ namespace _4LeafServer
             }
         }
 
-        public void CreateChatRoom(byte[] inRecvData, User UserInfo, string inAreaName_Kor, int inAreaIndex)
+        public void CreateChatRoom(byte[] inRecvData, UserModel UserInfo, string inAreaName_Kor, int inAreaIndex)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -1719,7 +1719,7 @@ namespace _4LeafServer
             byte[] DataLength = null;
             int SendDataLength = 0;
 
-            ChatRoom NewRoom = GetRoomInfo(inRecvData, inRoomIndex, Owner);
+            ChatRoomModel NewRoom = GetRoomInfo(inRecvData, inRoomIndex, Owner);
             ServChat.ChatRoomList.Add(NewRoom);
 
             byte[] Data = Encoding.Default.GetBytes(NewRoom.Title);
@@ -1760,7 +1760,7 @@ namespace _4LeafServer
             }
         }
 
-        public byte[] EnterRoom(User UserInfo, int inRoomIndex)
+        public byte[] EnterRoom(UserModel UserInfo, int inRoomIndex)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -1781,7 +1781,7 @@ namespace _4LeafServer
             return SendData;
         }
 
-        public byte[] Avatar_Data(Avatar inAvatar)
+        public byte[] Avatar_Data(AvatarModel inAvatar)
         {
             int DataIndex = 0;
 
@@ -1964,7 +1964,7 @@ namespace _4LeafServer
             return Avatar;
         }
 
-        public byte[] Avatar_Full(Avatar inAvatar)
+        public byte[] Avatar_Full(AvatarModel inAvatar)
         {
             int DataIndex = 0;
 
@@ -2130,7 +2130,7 @@ namespace _4LeafServer
             // 미분석            - [116] / 12
             DataIndex = 172;
 
-            foreach (Inven objInven in inAvatar.Inven)
+            foreach (InvenModel objInven in inAvatar.Inven)
             {
                 TempData = BitConverter.GetBytes(objInven.ItemIndex);
                 Avatar[DataIndex++] = TempData[0];
@@ -2207,7 +2207,7 @@ namespace _4LeafServer
             return Encoding.Default.GetString(Data);
         }
 
-        public ChatRoom GetRoomInfo(byte[] inRecvData, int inRoomIndex, NTClient Owner)
+        public ChatRoomModel GetRoomInfo(byte[] inRecvData, int inRoomIndex, NTClient Owner)
         {
             Owner.ChatRoomIndex = inRoomIndex;
 
@@ -2233,7 +2233,7 @@ namespace _4LeafServer
                 Password = Encoding.Default.GetString(Data);
             }
 
-            return new ChatRoom(inRoomIndex, Title, Password, Roof, Interior, MaxCount, Owner);
+            return new ChatRoomModel(inRoomIndex, Title, Password, Roof, Interior, MaxCount, Owner);
         }
 
         //public byte[] _Temp(byte[] inRecvData)

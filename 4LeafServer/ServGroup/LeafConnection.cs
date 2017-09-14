@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 
-namespace _4LeafServer
+namespace LeafServer
 {
     public static class LeafConnection
     {

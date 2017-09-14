@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace _4LeafServer
+namespace LeafServer
 {
     public delegate void add_msg();                          // 디버깅 정보 출력 
 

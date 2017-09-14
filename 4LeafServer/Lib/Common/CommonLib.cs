@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 
-namespace _4LeafServer
+namespace LeafServer
 {
     public enum ITEM_SERIES
     {
@@ -25,8 +26,35 @@ namespace _4LeafServer
         WestWind,
     }
 
+    public enum DBErrorCode
+    {
+        WrongPameter = 101,
+        AlreadyExistsAccount = 102,
+        NotExistsAccount = 103,
+        WrongPassword = 104,
+
+        Exception = 200,
+
+        SUCCESS = 1000,
+    }
+
     public class CommonLib
     {
+        #region Private
+        private static readonly Dictionary<int, string> _dbOutput = new Dictionary<int, string>()
+        {
+            /// Account
+            { 101, "입력 인자가 올바르지 않습니다." },
+            { 102, "이미 존재하는 계정 입니다."},
+            { 103, "존재하지 않는 계정 입니다." },
+            { 104, "Password가 올바르지 않습니다."},
+
+            { 200, "예상치 못한 오류가 발생 하였습니다. 관리자에게 문의 바랍니다."},
+            { 1000, "Success"}
+        };
+        #endregion
+
+        #region Public
         public static readonly string DBConnConfig = "server=192.168.56.101;uid=root;pwd=runedb;database=4Leaf";
         public static readonly string DBEncryptKey = "NS#4@Leaf&";
         public static readonly int MAX_AVATAR_COUNT = 1;
@@ -35,10 +63,14 @@ namespace _4LeafServer
 
         public static readonly string WorldMap_Eng = "WorldMap";
         public static readonly string WorldMap_Kor = "아노마라드 상공";
+
         /// <summary>
         /// 로그인 공지 메세지
         /// </summary>
         public static readonly string NoticeMessae = "Welcome NS Server ";
+        /// <summary>
+        /// 가입 확인 메세지
+        /// </summary>
         public static readonly string RegisterMessage = "잘 읽어 주세요!\r\n" +
             " - 회원 가입 시 사용 할 주민등록 번호\r\n" +
             "   (남)800101 - 1000008 / (여)800101 - 2000001\r\n\r\n" +
@@ -47,6 +79,7 @@ namespace _4LeafServer
             " - 실제로 저장되는 정보는 아이디와 비밀번호만 저장 됩니다.\r\n\r\n" +
             " - 작업이 성공적으로 완료 되었다는 메세지가 나타나면 클라종료 후,\r\n" +
             "   재 접속 하시면 됩니다.";
+        #endregion
 
         public static byte[] ReceiveData(Socket inClient)
         {
@@ -735,5 +768,20 @@ namespace _4LeafServer
             return world_name;
         }
 
+        public static string DBResult(int resCode)
+        {
+            if (_dbOutput.ContainsKey(resCode))
+                return _dbOutput[resCode];
+            else
+                return string.Empty;
+        }
+
+        public static bool IsSuccess(int resCode)
+        {
+            if (resCode == (int)DBErrorCode.SUCCESS)
+                return true;
+            else
+                return false;
+        }
     }
 }

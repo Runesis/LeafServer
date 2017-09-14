@@ -1,8 +1,8 @@
-﻿namespace _4LeafServer
+﻿namespace LeafServer
 {
-    public class ShopBase : BaseClass
+    public class ShopBaseModel : DisposeClass
     {
-        ~ShopBase()
+        ~ShopBaseModel()
         { Dispose(); }
 
         public int Index { get; set; }
@@ -13,7 +13,7 @@
         public int Quantity { get; set; }
     }
 
-    public class ItemInfo : ShopBase
+    public class ItemModel : ShopBaseModel
     {
         public int TID { get; set; }
         public string Series { get; set; }
@@ -22,7 +22,7 @@
         public string Store { get; set; }
     }
 
-    public class CardInfo : ShopBase
+    public class CardModel : ShopBaseModel
     {
         public int CID { get; set; }
         public string Rank { get; set; }

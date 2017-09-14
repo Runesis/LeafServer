@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace _4LeafServer
+namespace LeafServer
 {
-    public class BaseClass : IDisposable
+    public class DisposeClass : IDisposable
     {
         public void Dispose()
         {
@@ -21,7 +21,7 @@ namespace _4LeafServer
         }
 
         // Use C# destructor syntax for finalization code.
-        ~BaseClass()
+        ~DisposeClass()
         {
             // Simply call Dispose(false).
             Dispose(false);

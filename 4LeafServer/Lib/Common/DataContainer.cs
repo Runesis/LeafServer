@@ -5,15 +5,15 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 
-namespace _4LeafServer
+namespace LeafServer
 {
-    public class DataContainer : BaseClass
+    public class DataContainer : DisposeClass
     {
         ~DataContainer()
         { Dispose(); }
 
-        private static Dictionary<int, ItemInfo> _itemInfoList = new Dictionary<int, ItemInfo>();
-        private static Dictionary<int, CardInfo> _cardInfoList = new Dictionary<int, CardInfo>();
+        private static Dictionary<int, ItemModel> _itemInfoList = new Dictionary<int, ItemModel>();
+        private static Dictionary<int, CardModel> _cardInfoList = new Dictionary<int, CardModel>();
 
         public static bool LoadContainer()
         {
@@ -39,12 +39,12 @@ namespace _4LeafServer
         /// </summary>
         /// <param name="inTable"></param>
         /// <returns></returns>
-        private static List<ItemInfo> _GetItemInfo(DataTable inTable)
+        private static List<ItemModel> _GetItemInfo(DataTable inTable)
         {
-            List<ItemInfo> InfoList = new List<ItemInfo>();
+            List<ItemModel> InfoList = new List<ItemModel>();
             foreach (DataRow objRow in inTable.Rows)
             {
-                ItemInfo objItem = new ItemInfo();
+                ItemModel objItem = new ItemModel();
                 objItem.TID = Convert.ToInt32(objRow["f_TID"]);
                 objItem.Index = Convert.ToInt32(objRow["f_Index"]);
                 objItem.Type = Convert.ToInt32(objRow["f_Type"]);
@@ -65,12 +65,12 @@ namespace _4LeafServer
         /// </summary>
         /// <param name="inTable"></param>
         /// <returns></returns>
-        private static List<CardInfo> _GetCardInfo(DataTable inTable)
+        private static List<CardModel> _GetCardInfo(DataTable inTable)
         {
-            List<CardInfo> InfoList = new List<CardInfo>();
+            List<CardModel> InfoList = new List<CardModel>();
             foreach (DataRow objRow in inTable.Rows)
             {
-                CardInfo objCard = new CardInfo();
+                CardModel objCard = new CardModel();
                 objCard.CID = Convert.ToInt32(objRow["f_CID"]);
                 objCard.Index = Convert.ToInt32(objRow["f_Index"]);
                 objCard.Type = Convert.ToInt32(objRow["f_Type"]);
@@ -117,29 +117,29 @@ namespace _4LeafServer
             }
         }
 
-        public static List<ItemInfo> GetItemList()
+        public static List<ItemModel> GetItemList()
         {
             if (_itemInfoList == null || _itemInfoList.Count < 1)
                 LoadContainer();
 
-            return new List<ItemInfo>(_itemInfoList.Values);
+            return new List<ItemModel>(_itemInfoList.Values);
         }
-        public static List<CardInfo> GetCardList()
+        public static List<CardModel> GetCardList()
         {
             if (_cardInfoList == null || _cardInfoList.Count < 1)
                 LoadContainer();
 
-            return new List<CardInfo>(_cardInfoList.Values);
+            return new List<CardModel>(_cardInfoList.Values);
         }
 
-        public static ItemInfo FindItem(int inIndex)
+        public static ItemModel FindItem(int inIndex)
         {
             if (_itemInfoList == null || _itemInfoList.Count < 1)
                 LoadContainer();
 
             return GetItemList().Find(r => r.Index == inIndex);
         }
-        public static CardInfo FindCard(int inIndex)
+        public static CardModel FindCard(int inIndex)
         {
             if (_itemInfoList == null || _itemInfoList.Count < 1)
                 LoadContainer();
@@ -147,12 +147,12 @@ namespace _4LeafServer
             return _cardInfoList[inIndex];
         }
 
-        public static List<ItemInfo> GetShopGoods(string inShop)
+        public static List<ItemModel> GetShopGoods(string inShop)
         {
             if (_itemInfoList == null || _itemInfoList.Count < 1)
                 LoadContainer();
 
-            return new List<ItemInfo>(_itemInfoList.Values).FindAll(r => r.Store == inShop);
+            return new List<ItemModel>(_itemInfoList.Values).FindAll(r => r.Store == inShop);
         }
     }
 }

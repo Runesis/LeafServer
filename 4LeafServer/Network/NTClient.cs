@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace _4LeafServer
+namespace LeafServer
 {
     public class NTClient : IDisposable
     {
@@ -14,7 +14,7 @@ namespace _4LeafServer
         public bool EnterRoom = false;
         public string CurrentArea = string.Empty;
 
-        public User UserInfo = null;
+        public UserModel UserInfo = null;
 
         public Socket ClientSocket = null;
         private Thread MainThread = null;

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace _4LeafServer
+namespace LeafServer
 {
-    public class User : BaseClass
+    public class UserModel : DisposeClass
     {
-        ~User()
+        ~UserModel()
         { Dispose(); }
 
         public string AccountID { get; set; }
 
-        public List<Avatar> AvatarList = null;
+        public List<AvatarModel> AvatarList = null;
 
         public int AvatarOrder { get; set; }
         public int Gender { get; set; }

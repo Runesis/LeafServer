@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace _4LeafServer
+namespace LeafServer
 {
-    public class Avatar : BaseClass
+    public class AvatarModel : DisposeClass
     {
-        ~Avatar()
+        ~AvatarModel()
         { Dispose(); }
 
         /// <Charecter>
@@ -26,7 +26,7 @@ namespace _4LeafServer
 
         public string CharacterName = null;
         public string Knights = null;
-        public List<Inven> Inven = null;
+        public List<InvenModel> Inven = null;
 
         public int GP { get; set; }
         public int FP { get; set; }
@@ -135,7 +135,7 @@ namespace _4LeafServer
             {
                 if (inCheckedInven[i])
                 {
-                    ItemInfo objItem = DataContainer.FindItem(Inven[i - 2].ItemIndex);
+                    ItemModel objItem = DataContainer.FindItem(Inven[i - 2].ItemIndex);
                     switch (objItem.Mount)
                     {
                         case 3: // 헤어

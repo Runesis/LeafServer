@@ -1,4 +1,4 @@
-﻿namespace _4LeafServer
+﻿namespace LeafServer
 {
     partial class frmMain
     {

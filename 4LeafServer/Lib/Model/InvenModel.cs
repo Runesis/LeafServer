@@ -1,8 +1,8 @@
-﻿namespace _4LeafServer
+﻿namespace LeafServer
 {
-    public class Inven : BaseClass
+    public class InvenModel : DisposeClass
     {
-        ~Inven()
+        ~InvenModel()
         { Dispose(); }
 
         public ulong UID { get; set; }

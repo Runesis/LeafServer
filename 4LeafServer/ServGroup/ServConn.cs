@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace _4LeafServer
+namespace LeafServer
 {
     public class ServConn : IDisposable
     {
@@ -21,7 +21,7 @@ namespace _4LeafServer
             if (LeafConnection.ConnUserList == null)
                 LeafConnection.ConnUserList = new List<NTClient>();
             if (ServChat.ChatRoomList == null)
-                ServChat.ChatRoomList = new List<ChatRoom>();
+                ServChat.ChatRoomList = new List<ChatRoomModel>();
 
             this.ServerPort = inPort;
         }
