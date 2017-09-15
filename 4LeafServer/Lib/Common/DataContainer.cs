@@ -1,8 +1,8 @@
 ﻿using Dapper;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Reflection;
 
 namespace LeafServer
@@ -12,29 +12,36 @@ namespace LeafServer
         ~DataContainer()
         { Dispose(); }
 
-        private static Dictionary<int, ItemModel> _itemInfoList = new Dictionary<int, ItemModel>();
-        private static Dictionary<int, CardModel> _cardInfoList = new Dictionary<int, CardModel>();
+        private static List<ItemModel> _itemInfoList = new List<ItemModel>();
+        private static List<CardModel> _cardInfoList = new List<CardModel>();
 
         public static bool LoadContainer()
         {
+            if (_itemInfoList.Count > 0 && _cardInfoList.Count > 0)
+                return true;
 
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            try
             {
-                try
+                using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
                 {
                     conn.Open();
+                    var dbResult = conn.QueryMultiple("sp_GetLeafData", commandType: CommandType.StoredProcedure);
 
-                    var dbResult = conn.QueryMultiple("sp_GetLeafData", null, commandType: CommandType.StoredProcedure);
+                    if (dbResult != null)
+                    {
+                        _itemInfoList = dbResult.Read<ItemModel>().AsList();
+                        _cardInfoList = dbResult.Read<CardModel>().AsList();
+                    }
 
                     // TODO : 데이터 바인딩 구현하기
                     //ToDictionary(ref _itemInfoList, GetItemInfo(dtDataSet.Tables[0]), "Index");
                     //ToDictionary(ref _cardInfoList, GetCardInfo(dtDataSet.Tables[1]), "Index");
-                }
-                catch { return false; }
-            }
 
-            if (_itemInfoList.Count > 0 && _cardInfoList.Count > 0)
-                return true;
+                    if (_itemInfoList.Count > 0 && _cardInfoList.Count > 0)
+                        return true;
+                }
+            }
+            catch { return false; }
 
             return false;
         }
@@ -134,7 +141,7 @@ namespace LeafServer
                         return null;
                 }
 
-                return new List<ItemModel>(_itemInfoList.Values);
+                return _itemInfoList;
             }
         }
         public static List<CardModel> GetCardList
@@ -149,7 +156,7 @@ namespace LeafServer
                         return null;
                 }
 
-                return new List<CardModel>(_cardInfoList.Values);
+                return _cardInfoList;
             }
         }
 
@@ -178,7 +185,18 @@ namespace LeafServer
                     return null;
             }
 
-            return new List<ItemModel>(_itemInfoList.Values).FindAll(r => r.Store == inShop);
+            return _itemInfoList.FindAll(r => r.Store == inShop);
+        }
+
+        public static bool IsDataLoad
+        {
+            get
+            {
+                if (_itemInfoList.Count > 0 && _cardInfoList.Count > 0)
+                    return true;
+                else
+                    return false;
+            }
         }
     }
 }

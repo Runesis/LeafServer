@@ -55,7 +55,7 @@ namespace LeafServer
         #endregion
 
         #region Public
-        public static readonly string DBConnConfig = "server=192.168.56.101;uid=root;pwd=runedb;database=4Leaf";
+        public static readonly string DBConnConfig = "server=localhost;uid=root;pwd=leaf@server;database=4leaf";
         public static readonly string DBEncryptKey = "NS#4@Leaf&";
         public static readonly int MAX_AVATAR_COUNT = 1;
         

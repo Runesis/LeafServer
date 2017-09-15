@@ -36,6 +36,7 @@
             this.lblConnUserCount = new System.Windows.Forms.Label();
             this.txtboxConnUserCount = new System.Windows.Forms.TextBox();
             this.grboxInfo = new System.Windows.Forms.GroupBox();
+            this.btnReloadData = new System.Windows.Forms.Button();
             this.grboxInfo.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -103,11 +104,23 @@
             this.grboxInfo.TabStop = false;
             this.grboxInfo.Text = "정보";
             // 
+            // btnReloadData
+            // 
+            this.btnReloadData.Enabled = false;
+            this.btnReloadData.Location = new System.Drawing.Point(149, 26);
+            this.btnReloadData.Name = "btnReloadData";
+            this.btnReloadData.Size = new System.Drawing.Size(94, 51);
+            this.btnReloadData.TabIndex = 5;
+            this.btnReloadData.Text = "ReloadData";
+            this.btnReloadData.UseVisualStyleBackColor = true;
+            this.btnReloadData.Click += new System.EventHandler(this.btnReloadData_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 362);
+            this.Controls.Add(this.btnReloadData);
             this.Controls.Add(this.grboxInfo);
             this.Controls.Add(this.txtLog);
             this.Controls.Add(this.btnServerSwitch);
@@ -133,6 +146,7 @@
         private System.Windows.Forms.Label lblConnUserCount;
         private System.Windows.Forms.TextBox txtboxConnUserCount;
         private System.Windows.Forms.GroupBox grboxInfo;
+        private System.Windows.Forms.Button btnReloadData;
     }
 }
 

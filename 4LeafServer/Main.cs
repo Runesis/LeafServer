@@ -11,10 +11,21 @@ namespace LeafServer
         {
             InitializeComponent();
 
+            LoadData();
+        }
+
+        private void LoadData()
+        {
             if (DataContainer.LoadContainer())
-            { Log("Data Loading Complete."); }
+            {
+                btnReloadData.Enabled = false;
+                Log("Data Loading Complete.");
+            }
             else
-            { Log("Data Load Error."); }
+            {
+                btnReloadData.Enabled = true;
+                Log("Data Load Error.");
+            }
         }
 
         #region Log Message Print
@@ -111,6 +122,14 @@ namespace LeafServer
             LeafConnection.ConnUserList.RemoveAll(r => r.ClientSocket == null);
 
             txtboxConnUserCount.Text = LeafConnection.ConnUserList.Count.ToString();
+        }
+
+        private void btnReloadData_Click(object sender, EventArgs e)
+        {
+            if (!DataContainer.IsDataLoad)
+                LoadData();
+            else
+                btnReloadData.Enabled = false;
         }
     }
 }
