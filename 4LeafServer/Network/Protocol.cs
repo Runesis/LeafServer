@@ -596,7 +596,7 @@ namespace LeafServer
             return SendData;
         }
 
-        public byte[] ShopList(string inAreaName_Kor, int inSeries = -1, int inMountType = -1, int inSex = -1)
+        public byte[] ShopList(string inAreaName_Kor, byte inSeries, int inMountType, bool inSex)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
@@ -605,7 +605,7 @@ namespace LeafServer
             byte[] Data = null;
 
             bool SeriesCheck = false;
-            int SeriesIndex = -1;
+            byte SeriesIndex = 0;
             string Series = string.Empty;
             string AreaName_Eng = CommonLib.AreaConvertEng(inAreaName_Kor);
 
@@ -1623,7 +1623,7 @@ namespace LeafServer
             byte[] DataLength = null;
             int SendDataLength = 0;
 
-            int RoomIndex = Convert.ToInt32(inRecvData[8]);
+            byte RoomIndex = inRecvData[8];
             string Creator = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).CharacterName;
             byte[] Data = Encoding.Default.GetBytes(Creator);
 
@@ -1707,13 +1707,13 @@ namespace LeafServer
             }
         }
 
-        public void BuildChatRoom(byte[] inRecvData, string inAreaName_Kor, int inRoomIndex, NTClient Owner)
+        public void BuildChatRoom(byte[] inRecvData, string inAreaName_Kor, byte inRoomIndex, NTClient inOwner)
         {
             byte[] SendData = null;
             byte[] DataLength = null;
             int SendDataLength = 0;
 
-            ChatRoomModel NewRoom = GetRoomInfo(inRecvData, inRoomIndex, Owner);
+            ChatRoomModel NewRoom = GetRoomInfo(inRecvData, inRoomIndex, inOwner);
             ServChat.ChatRoomList.Add(NewRoom);
 
             byte[] Data = Encoding.Default.GetBytes(NewRoom.Title);
@@ -1799,6 +1799,7 @@ namespace LeafServer
             TempData = BitConverter.GetBytes(inAvatar.Hair);
             Avatar[DataIndex++] = TempData[0];
             Avatar[DataIndex++] = TempData[1];
+
             // 머리 악세사리(2)
             if (inAvatar.HairAcc > 0)
             {
@@ -1806,42 +1807,25 @@ namespace LeafServer
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 상의1 (2)
-            TempData = BitConverter.GetBytes(inAvatar.Clothes);
-            Avatar[DataIndex++] = TempData[0];
-            Avatar[DataIndex++] = TempData[1];
-            // 상의2 (2)
-            if (inAvatar.Clothes2 > 0)
+            else
+                DataIndex += 2;
+
+            // 상의 (2 * 3)
+            foreach (var objClothes in inAvatar.Clothes)
             {
-                TempData = BitConverter.GetBytes(inAvatar.Clothes2);
+                TempData = BitConverter.GetBytes(objClothes);
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 상의3 (2)
-            if (inAvatar.Clothes3 > 0)
+
+            // 바지 (2 * 3)
+            foreach (var objPants in inAvatar.Pants)
             {
-                TempData = BitConverter.GetBytes(inAvatar.Clothes3);
+                TempData = BitConverter.GetBytes(objPants);
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 바지1 (2)
-            TempData = BitConverter.GetBytes(inAvatar.Pants);
-            Avatar[DataIndex++] = TempData[0];
-            Avatar[DataIndex++] = TempData[1];
-            // 바지2 (2)
-            if (inAvatar.Pants2 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Pants2);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 바지3 (2)
-            if (inAvatar.Pants3 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Pants3);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
+
             // 신발 (2)
             if (inAvatar.Shoes > 0)
             {
@@ -1849,80 +1833,19 @@ namespace LeafServer
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 무기1 (2)
-            if (inAvatar.Weapone > 0)
+
+            // 무기 (2 * 3)
+            foreach (var objWeapone in inAvatar.Weapone)
             {
-                TempData = BitConverter.GetBytes(inAvatar.Weapone);
+                TempData = BitConverter.GetBytes(objWeapone);
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 무기2 (2)
-            if (inAvatar.Weapone2 > 0)
+
+            // 악세사리 (2 * 8)
+            foreach (var objAcc in inAvatar.Accessory)
             {
-                TempData = BitConverter.GetBytes(inAvatar.Weapone2);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 무기3 (2)
-            if (inAvatar.Weapone3 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Weapone3);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리1 (2)
-            if (inAvatar.Acc1 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc1);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리2 (2)
-            if (inAvatar.Acc2 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc2);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리3 (2)
-            if (inAvatar.Acc3 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc3);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리4 (2)
-            if (inAvatar.Acc4 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc4);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리5 (2)
-            if (inAvatar.Acc5 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc5);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리6 (2)
-            if (inAvatar.Acc6 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc6);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리7 (2)
-            if (inAvatar.Acc7 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc7);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리8 (2)
-            if (inAvatar.Acc8 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc8);
+                TempData = BitConverter.GetBytes(objAcc);
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
@@ -1989,42 +1912,25 @@ namespace LeafServer
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 상의1 (2)
-            TempData = BitConverter.GetBytes(inAvatar.Clothes);
-            Avatar[DataIndex++] = TempData[0];
-            Avatar[DataIndex++] = TempData[1];
-            // 상의2 (2)
-            if (inAvatar.Clothes2 > 0)
+            else
+                DataIndex += 2;
+
+            // 상의 (2 * 3)
+            foreach (var objClothes in inAvatar.Clothes)
             {
-                TempData = BitConverter.GetBytes(inAvatar.Clothes2);
+                TempData = BitConverter.GetBytes(objClothes);
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 상의3 (2)
-            if (inAvatar.Clothes3 > 0)
+
+            // 바지 (2 * 3)
+            foreach (var objPants in inAvatar.Pants)
             {
-                TempData = BitConverter.GetBytes(inAvatar.Clothes3);
+                TempData = BitConverter.GetBytes(objPants);
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 바지1 (2)
-            TempData = BitConverter.GetBytes(inAvatar.Pants);
-            Avatar[DataIndex++] = TempData[0];
-            Avatar[DataIndex++] = TempData[1];
-            // 바지2 (2)
-            if (inAvatar.Pants2 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Pants2);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 바지3 (2)
-            if (inAvatar.Pants3 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Pants3);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
+
             // 신발 (2)
             if (inAvatar.Shoes > 0)
             {
@@ -2032,69 +1938,23 @@ namespace LeafServer
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 무기1 (2)
-            if (inAvatar.Weapone > 0)
+
+            // 무기 (2 * 3)
+            foreach (var objWeapone in inAvatar.Weapone)
             {
-                TempData = BitConverter.GetBytes(inAvatar.Weapone);
+                TempData = BitConverter.GetBytes(objWeapone);
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 무기2 (2)
-            if (inAvatar.Weapone2 > 0)
+
+            // 악세사리 (2 * 8)
+            foreach (var objAcc in inAvatar.Accessory)
             {
-                TempData = BitConverter.GetBytes(inAvatar.Weapone2);
+                TempData = BitConverter.GetBytes(objAcc);
                 Avatar[DataIndex++] = TempData[0];
                 Avatar[DataIndex++] = TempData[1];
             }
-            // 무기3 (2)
-            if (inAvatar.Weapone3 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Weapone3);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리1 (2)
-            if (inAvatar.Acc1 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc1);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리2 (2)
-            if (inAvatar.Acc2 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc2);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리3 (2)
-            if (inAvatar.Acc3 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc3);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리4 (2)
-            if (inAvatar.Acc4 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc4);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리5 (2)
-            if (inAvatar.Acc5 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc5);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
-            // 악세사리6 (2)
-            if (inAvatar.Acc6 > 0)
-            {
-                TempData = BitConverter.GetBytes(inAvatar.Acc6);
-                Avatar[DataIndex++] = TempData[0];
-                Avatar[DataIndex++] = TempData[1];
-            }
+
 
             // 미분석            - [60] / 24
             DataIndex = 84;
@@ -2201,17 +2061,19 @@ namespace LeafServer
             return Encoding.Default.GetString(Data);
         }
 
-        public ChatRoomModel GetRoomInfo(byte[] inRecvData, int inRoomIndex, NTClient Owner)
+        public ChatRoomModel GetRoomInfo(byte[] inRecvData, byte inRoomIndex, NTClient inOwner)
         {
-            Owner.ChatRoomIndex = inRoomIndex;
+            inOwner.ChatRoomIndex = inRoomIndex;
 
-            int Interior = Convert.ToInt32(inRecvData[10]);
+            UInt16 Interior = Convert.ToUInt16(inRecvData[10]);
             if (Interior > 100)
                 Interior -= 128;
-            int Roof = Convert.ToInt32(inRecvData[8]);
+
+            UInt16 Roof = Convert.ToUInt16(inRecvData[8]);
             if (Roof > 100)
                 Roof -= 128;
-            int MaxCount = Convert.ToInt32(inRecvData[9]);
+
+            byte MaxCount = inRecvData[9];
 
             int DateLength = Convert.ToInt32(inRecvData[11]);
             byte[] Data = new byte[DateLength];
@@ -2227,7 +2089,7 @@ namespace LeafServer
                 Password = Encoding.Default.GetString(Data);
             }
 
-            return new ChatRoomModel(inRoomIndex, Title, Password, Roof, Interior, MaxCount, Owner);
+            return new ChatRoomModel(inRoomIndex, Title, Password, Roof, Interior, MaxCount, inOwner);
         }
     }
 }

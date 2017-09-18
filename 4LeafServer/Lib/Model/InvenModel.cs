@@ -1,12 +1,14 @@
-﻿namespace LeafServer
+﻿using System;
+
+namespace LeafServer
 {
     public class InvenModel : DisposeClass
     {
         ~InvenModel()
         { Dispose(); }
 
-        public ulong UID { get; set; }
-        public int ItemIndex { get; set; }
-        public int Type { get; set; }
+        public UInt64 UID { get; set; }
+        public UInt16 ItemIndex { get; set; }
+        public byte Type { get; set; }
     }
 }

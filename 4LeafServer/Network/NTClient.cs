@@ -13,7 +13,7 @@ namespace LeafServer
         private Dictionary<int, string> _areaPath = null;
 
         public int AreaIndex = -1;
-        public int ChatRoomIndex = -1;
+        public byte ChatRoomIndex;
         public bool EnterRoom = false;
         public string IPAddr = string.Empty;
         public string CurrentArea = string.Empty;
@@ -271,7 +271,7 @@ namespace LeafServer
                                     #region 0 : 채팅방 입장 요청
                                     case 0:
                                         _protocol.LeaveAreaUserList(UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).CharacterName, CurrentArea);
-                                        ChatRoomIndex = Convert.ToInt32(RecvData[8]);
+                                        ChatRoomIndex = RecvData[8];
                                         EnterRoom = true;
                                         ClientSocket.Send(_protocol.EnterRoom(UserInfo, ChatRoomIndex));
                                         break;
@@ -288,7 +288,7 @@ namespace LeafServer
                                     #region 2 : 방 생성 취소
                                     case 2:
                                         _protocol.CancelRoomCreate(RecvData, CurrentArea, ChatRoomIndex);
-                                        ChatRoomIndex = -1;
+                                        ChatRoomIndex = 0;
                                         break;
 
                                     #endregion

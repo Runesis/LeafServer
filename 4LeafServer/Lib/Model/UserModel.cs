@@ -13,7 +13,7 @@ namespace LeafServer
         public List<AvatarModel> AvatarList = null;
 
         public int AvatarOrder { get; set; }
-        public int Gender { get; set; }
+        public bool Gender { get; set; }
         public DateTime LastLogin;
         public DateTime LoginTime;
     }

@@ -1,38 +1,41 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LeafServer
 {
     // TODO : 클라이언트 측, 채팅방 구현 이전에는 해당 클래스는 의미가 없음.
     public class ChatRoomModel : DisposeClass
     {
+        public ChatRoomModel()
+        {
+            Lock = false;
+        }
+
         ~ChatRoomModel()
         { Dispose(); }
 
-        public int RoomIndex { get; set; }
+        public byte RoomIndex { get; set; }
         public string Title { get; set; }
         public string Password { get; set; }
-        public int MaxUser { get; set; }
-        public int Roof { get; set; }
-        public int Interior { get; set; }
+        public byte MaxUser { get; set; }
+        public UInt16 Roof { get; set; }
+        public UInt16 Interior { get; set; }
         public string Owner { get; set; }
         public bool Lock { get; set; }
 
         public List<NTClient> UserList;
 
-        public ChatRoomModel(int RoomIndex, string Title, string Password, int Roof, int Interior, int MaxCount, NTClient RoomOwner)
+        public ChatRoomModel(byte inRoomIndex, string inTitle, string inPassword, ushort inRoof, ushort inInterior, byte inMaxCount, NTClient inRoomOwner)
         {
-            this.RoomIndex = RoomIndex;
-            this.Title = Title;
-            this.Password = Password;
-            this.Roof = Roof;
-            this.Interior = Interior;
+            RoomIndex = inRoomIndex;
+            Title = inTitle;
+            Password = inPassword;
+            Roof = inRoof;
+            Interior = inInterior;
+            MaxUser = inMaxCount;
+            Owner = inRoomOwner.UserInfo.AvatarList.Find(r => r.Order == inRoomOwner.UserInfo.AvatarOrder).CharacterName;
 
-            MaxUser = MaxCount;
-            Lock = false;
-
-            Owner = RoomOwner.UserInfo.AvatarList.Find(r => r.Order == RoomOwner.UserInfo.AvatarOrder).CharacterName;
-
-            UserList = new List<NTClient> { RoomOwner };
+            UserList = new List<NTClient> { inRoomOwner };
         }
 
         public void SendUserList()

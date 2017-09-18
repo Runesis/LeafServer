@@ -1,9 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LeafServer
 {
     public class AvatarModel : DisposeClass
     {
+        public AvatarModel()
+        {
+            Clothes = new List<UInt16>();
+            Pants = new List<UInt16>();
+            Weapone = new List<UInt16>();
+            Accessory = new List<UInt16>();
+        }
+
         ~AvatarModel()
         { Dispose(); }
 
@@ -28,32 +37,21 @@ namespace LeafServer
         public string Knights = null;
         public List<InvenModel> Inven = null;
 
-        public int GP { get; set; }
-        public int FP { get; set; }
+        public UInt32 GP { get; set; }
+        public UInt32 FP { get; set; }
 
-        public ulong UID { get; set; }
-        public int CID { get; set; }
-        public int Order { get; set; }
-        public int Hair { get; set; }
-        public int HairAcc { get; set; }
-        public int Clothes { get; set; }
-        public int Clothes2 { get; set; }
-        public int Clothes3 { get; set; }
-        public int Pants { get; set; }
-        public int Pants2 { get; set; }
-        public int Pants3 { get; set; }
-        public int Shoes { get; set; }
-        public int Weapone { get; set; }
-        public int Weapone2 { get; set; }
-        public int Weapone3 { get; set; }
-        public int Acc1 { get; set; }
-        public int Acc2 { get; set; }
-        public int Acc3 { get; set; }
-        public int Acc4 { get; set; }
-        public int Acc5 { get; set; }
-        public int Acc6 { get; set; }
-        public int Acc7 { get; set; }
-        public int Acc8 { get; set; }
+        public UInt64 UID { get; set; }
+        public UInt16 CID { get; set; }
+        public byte Order { get; set; }
+
+        public UInt16 Hair { get; set; }
+        public UInt16 HairAcc { get; set; }
+        public UInt16 Shoes { get; set; }
+
+        public List<UInt16> Clothes;
+        public List<UInt16> Pants;
+        public List<UInt16> Weapone;
+        public List<UInt16> Accessory;
 
         public void InitContume()
         {
@@ -105,26 +103,6 @@ namespace LeafServer
             }
 
             #endregion
-
-            HairAcc = 0;
-            Clothes = 0;
-            Clothes2 = 0;
-            Clothes3 = 0;
-            Pants = 0;
-            Pants2 = 0;
-            Pants3 = 0;
-            Shoes = 0;
-            Weapone = 0;
-            Weapone2 = 0;
-            Weapone3 = 0;
-            Acc1 = 0;
-            Acc2 = 0;
-            Acc3 = 0;
-            Acc4 = 0;
-            Acc5 = 0;
-            Acc6 = 0;
-            Acc7 = 0;
-            Acc8 = 0;
         }
 
         public void SetCostume(bool[] inCheckedInven)
@@ -145,49 +123,19 @@ namespace LeafServer
                             HairAcc = objItem.Index;
                             break;
                         case 5: // 상의
-                            if (Clothes == 0)
-                                Clothes = objItem.Index;
-                            else if (Clothes2 == 0)
-                                Clothes2 = objItem.Index;
-                            else if (Clothes3 == 0)
-                                Clothes3 = objItem.Index;
+                            Clothes.Add(objItem.Index);
                             break;
                         case 6: // 하의
-                            if (Pants == 0)
-                                Pants = objItem.Index;
-                            else if (Pants2 == 0)
-                                Pants2 = objItem.Index;
-                            else if (Pants3 == 0)
-                                Pants3 = objItem.Index;
+                            Pants.Add(objItem.Index);
                             break;
                         case 7: // 신발
                             Shoes = objItem.Index;
                             break;
                         case 8: // 무기
-                            if (Weapone == 0)
-                                Weapone = objItem.Index;
-                            else if (Weapone2 == 0)
-                                Weapone2 = objItem.Index;
-                            else if (Weapone3 == 0)
-                                Weapone3 = objItem.Index;
+                            Weapone.Add(objItem.Index);
                             break;
                         case 9: // 악세사리
-                            if (Acc1 == 0)
-                                Acc1 = objItem.Index;
-                            else if (Acc2 == 0)
-                                Acc2 = objItem.Index;
-                            else if (Acc3 == 0)
-                                Acc3 = objItem.Index;
-                            else if (Acc4 == 0)
-                                Acc4 = objItem.Index;
-                            else if (Acc5 == 0)
-                                Acc5 = objItem.Index;
-                            else if (Acc6 == 0)
-                                Acc6 = objItem.Index;
-                            else if (Acc7 == 0)
-                                Acc7 = objItem.Index;
-                            else if (Acc8 == 0)
-                                Acc8 = objItem.Index;
+                            Accessory.Add(objItem.Index);
                             break;
                     }
                 }

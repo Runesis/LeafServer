@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -145,22 +144,104 @@ namespace LeafServer
                 param.Add("@Order", Avatar.Order);
                 param.Add("@Hair", Avatar.Hair);
                 param.Add("@HairAcc", Avatar.HairAcc);
-                param.Add("@Clothes", Avatar.Clothes);
-                param.Add("@Clothes2", Avatar.Clothes2);
-                param.Add("@Clothes3", Avatar.Clothes3);
-                param.Add("@Pants", Avatar.Pants);
-                param.Add("@Pants2", Avatar.Pants2);
-                param.Add("@Pants3", Avatar.Pants3);
+
+                if (Avatar.Clothes.Count == 0)
+                {
+                    param.Add("@Clothes", 0);
+                    param.Add("@Clothes2", 0);
+                    param.Add("@Clothes3", 0);
+                }
+                else
+                {
+                    if (Avatar.Clothes.Count >= 1)
+                    {
+                        param.Add("@Clothes", Avatar.Clothes[0]);
+                        if (Avatar.Clothes.Count >= 2)
+                        {
+                            param.Add("@Clothes2", Avatar.Clothes[1]);
+                            if (Avatar.Clothes.Count >= 3)
+                                param.Add("@Clothes3", Avatar.Clothes[2]);
+                        }
+                    }
+                }
+
+                if (Avatar.Pants.Count == 0)
+                {
+                    param.Add("@Pants", 0);
+                    param.Add("@Pants2", 0);
+                    param.Add("@Pants3", 0);
+                }
+                else
+                {
+                    if (Avatar.Pants.Count >= 1)
+                    {
+                        param.Add("@Pants", Avatar.Pants[0]);
+                        if (Avatar.Pants.Count >= 2)
+                        {
+                            param.Add("@Pants2", Avatar.Pants[1]);
+                            if (Avatar.Pants.Count >= 3)
+                                param.Add("@Pants3", Avatar.Pants[2]);
+                        }
+                    }
+                }
+
                 param.Add("@Shoes", Avatar.Shoes);
-                param.Add("@Weapone", Avatar.Weapone);
-                param.Add("@Weapone2", Avatar.Weapone2);
-                param.Add("@Weapone3", Avatar.Weapone3);
-                param.Add("@Acc1", Avatar.Acc1);
-                param.Add("@Acc2", Avatar.Acc2);
-                param.Add("@Acc3", Avatar.Acc3);
-                param.Add("@Acc4", Avatar.Acc4);
-                param.Add("@Acc5", Avatar.Acc5);
-                param.Add("@Acc6", Avatar.Acc6);
+
+                if (Avatar.Weapone.Count == 0)
+                {
+                    param.Add("@Weapone", 0);
+                    param.Add("@Weapone2", 0);
+                    param.Add("@Weapone3", 0);
+                }
+                else
+                {
+                    if (Avatar.Weapone.Count >= 1)
+                    {
+                        param.Add("@Weapone", Avatar.Weapone[0]);
+                        if (Avatar.Weapone.Count >= 2)
+                        {
+                            param.Add("@Weapone2", Avatar.Weapone[1]);
+                            if (Avatar.Weapone.Count >= 3)
+                                param.Add("@Weapone3", Avatar.Weapone[2]);
+                        }
+                    }
+                }
+
+                if (Avatar.Accessory.Count == 0)
+                {
+                    param.Add("@Acc1", 0);
+                    param.Add("@Acc2", 0);
+                    param.Add("@Acc3", 0);
+                    param.Add("@Acc4", 0);
+                    param.Add("@Acc5", 0);
+                    param.Add("@Acc6", 0);
+                }
+                else
+                {
+                    if (Avatar.Accessory.Count >= 1)
+                    {
+                        param.Add("@Acc1", Avatar.Accessory[0]);
+                        if (Avatar.Accessory.Count >= 2)
+                        {
+                            param.Add("@Acc2", Avatar.Accessory[1]);
+                            if (Avatar.Accessory.Count >= 3)
+                            {
+                                param.Add("@Acc3", Avatar.Accessory[2]);
+                                if (Avatar.Accessory.Count >= 4)
+                                {
+                                    param.Add("@Acc4", Avatar.Accessory[3]);
+                                    if (Avatar.Accessory.Count >= 5)
+                                    {
+                                        param.Add("@Acc5", Avatar.Accessory[4]);
+                                        if (Avatar.Accessory.Count >= 6)
+                                            param.Add("@Acc6", Avatar.Accessory[5]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
                 conn.Query("dbo.sp_UpdateCostume", param, commandType: CommandType.StoredProcedure);
 
@@ -198,45 +279,6 @@ namespace LeafServer
 
                 return CommonLib.IsSuccess(param.Get<int>("RetVal"));
             }
-        }
-
-        public static List<AvatarModel> _GetAvatarList(DataTable AvatarTable)
-        {
-            List<AvatarModel> AvatarList = new List<AvatarModel>();
-
-            foreach (DataRow DataRow in AvatarTable.Rows)
-            {
-                AvatarModel objAvatar = new AvatarModel();
-                objAvatar.Order = Convert.ToInt32(DataRow["Order"]);
-                objAvatar.CID = Convert.ToInt32(DataRow["CID"]);
-                objAvatar.CharacterName = Convert.ToString(DataRow["Name"]);
-                objAvatar.Knights = Convert.ToString(DataRow["Knight"]);
-                objAvatar.GP = Convert.ToInt32(DataRow["GP"]);
-                objAvatar.FP = Convert.ToInt32(DataRow["FP"]);
-                objAvatar.Hair = Convert.ToInt32(DataRow["Hair"]);
-                objAvatar.HairAcc = Convert.ToInt32(DataRow["HairAcc"]);
-                objAvatar.Clothes = Convert.ToInt32(DataRow["Clothes"]);
-                objAvatar.Clothes2 = Convert.ToInt32(DataRow["Clothes2"]);
-                objAvatar.Clothes3 = Convert.ToInt32(DataRow["Clothes3"]);
-                objAvatar.Pants = Convert.ToInt32(DataRow["Pants"]);
-                objAvatar.Pants2 = Convert.ToInt32(DataRow["Pants2"]);
-                objAvatar.Pants3 = Convert.ToInt32(DataRow["Pants3"]);
-                objAvatar.Shoes = Convert.ToInt32(DataRow["Shoes"]);
-                objAvatar.Weapone = Convert.ToInt32(DataRow["Weapone"]);
-                objAvatar.Weapone2 = Convert.ToInt32(DataRow["Weapone2"]);
-                objAvatar.Weapone3 = Convert.ToInt32(DataRow["Weapone3"]);
-                objAvatar.Acc1 = Convert.ToInt32(DataRow["Acc1"]);
-                objAvatar.Acc2 = Convert.ToInt32(DataRow["Acc2"]);
-                objAvatar.Acc3 = Convert.ToInt32(DataRow["Acc3"]);
-                objAvatar.Acc4 = Convert.ToInt32(DataRow["Acc4"]);
-                objAvatar.Acc5 = Convert.ToInt32(DataRow["Acc5"]);
-                objAvatar.Acc6 = Convert.ToInt32(DataRow["Acc6"]);
-                objAvatar.Acc7 = Convert.ToInt32(DataRow["Acc7"]);
-                objAvatar.Acc8 = Convert.ToInt32(DataRow["Acc8"]);
-                AvatarList.Add(objAvatar);
-            }
-
-            return AvatarList;
         }
 
         public static List<InvenModel> GetInvenList(string AccountID, int inAvatarOrder)

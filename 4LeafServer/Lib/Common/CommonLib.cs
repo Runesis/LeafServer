@@ -58,7 +58,7 @@ namespace LeafServer
         public static readonly string DBConnConfig = "server=localhost;uid=root;pwd=leaf@server;database=4leaf";
         public static readonly string DBEncryptKey = "NS#4@Leaf&";
         public static readonly int MAX_AVATAR_COUNT = 1;
-        
+
         /// <summary>
         /// Server Port
         /// </summary>
@@ -111,15 +111,15 @@ namespace LeafServer
         public static bool CheckChatRegion(string inArea_Eng)
         { return inArea_Eng.Contains("CT_"); }
 
-        public static int GetAreaIndex(string _Area)
+        public static int GetAreaIndex(string inArea)
         {
-            if (_Area == WorldMap_Kor)
+            if (inArea == WorldMap_Kor)
                 return -1;
             else
                 return LeafConnection.ConnUserList.FindAll(r =>
                     r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != null
                     && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName.Length > 0
-                    && r.CurrentArea == _Area).Count;
+                    && r.CurrentArea == inArea).Count;
         }
 
         public static byte[] DummyAvatarData()
@@ -202,13 +202,13 @@ namespace LeafServer
             return Avatar;
         }
 
-        public static string AreaWeather(string _Area)
+        public static string AreaWeather(string inArea)
         {
-            if (AreaConvertEng(_Area).Contains("Snow"))
+            if (AreaConvertEng(inArea).Contains("Snow"))
                 return "Snow";
-            else if (AreaConvertEng(_Area).Contains("Plain"))
+            else if (AreaConvertEng(inArea).Contains("Plain"))
                 return "Plain";
-            else if (AreaConvertEng(_Area).Contains("Sea"))
+            else if (AreaConvertEng(inArea).Contains("Sea"))
                 return "Sea";
             else
                 return "None";
@@ -217,9 +217,9 @@ namespace LeafServer
         /// <summary>
         /// 지역이름 Convert [한 -> 영]
         /// </summary>
-        /// <param name="_Area"></param>
+        /// <param name="inArea"></param>
         /// <returns></returns>
-        public static string AreaConvertEng(string _Area)
+        public static string AreaConvertEng(string inArea)
         {
             /*
              * •/WorldMap ; 아노마라드 상공
@@ -270,7 +270,7 @@ namespace LeafServer
 
             string world_name = null;
 
-            switch (_Area)
+            switch (inArea)
             {
                 case "아노마라드 상공":
                     world_name = "WorldMap";
@@ -498,9 +498,9 @@ namespace LeafServer
         /// <summary>
         /// 지역이름 Convert [영 -> 한]
         /// </summary>
-        /// <param name="_Area"></param>
+        /// <param name="inArea"></param>
         /// <returns></returns>
-        public static string AreaConvertKor(string _Area)
+        public static string AreaConvertKor(string inArea)
         {
             /*
              * •/WorldMap ; 아노마라드 상공
@@ -551,7 +551,7 @@ namespace LeafServer
 
             string world_name = null;
 
-            switch (_Area)
+            switch (inArea)
             {
                 case "WorldMap":
                     world_name = "아노마라드 상공";
