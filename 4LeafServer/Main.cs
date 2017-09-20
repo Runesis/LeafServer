@@ -84,10 +84,10 @@ namespace LeafServer
                         ConnectionServer = null;
                     }
 
+                    CommonLib.IsON = true;
+
                     ConnectionServer = new ServConn();
                     ConnectionServer.ConnServerStart();
-
-                    CommonLib.IsON = true;
 
                     btnServerSwitch.BackColor = System.Drawing.Color.SeaShell;
                     btnServerSwitch.Text = "Closed";

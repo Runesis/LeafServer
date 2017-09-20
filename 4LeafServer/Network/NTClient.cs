@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NSLib;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -36,13 +37,13 @@ namespace LeafServer
 
         private void Receiver()
         {
-            byte[] _RecvData = null;
+            byte[] _recvData = null;
             try
             {
                 while (ClientSocket != null && ClientSocket.Connected)
                 {
-                    byte[] RecvData = CommonLib.ReceiveData(ClientSocket);
-                    _RecvData = RecvData;
+                    byte[] RecvData = NetworkManager.ReceiveData(ClientSocket);
+                    _recvData = RecvData;
 
                     if (RecvData != null && RecvData.Length > 0)
                     {

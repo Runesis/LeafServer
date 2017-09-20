@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LeafServer
+namespace NSLib
 {
     public class DisposeClass : IDisposable
     {

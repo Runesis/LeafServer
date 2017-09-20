@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NSLib;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -7,8 +8,11 @@ namespace LeafServer
 {
     public class ServConn : DisposeClass
     {
+        ~ServConn()
+        { Dispose(); }
+
         private Socket _clientSocket = null;
-        public Thread ConnThread = null;
+        private Thread _connThread = null;
 
         public ServConn()
         {
@@ -18,20 +22,17 @@ namespace LeafServer
                 ServChat.ChatRoomList = new List<ChatRoomModel>();
         }
 
-        ~ServConn()
-        { Dispose(); }
-
         public void ConnServerStart()
         {
-            ConnThread = new Thread(new ThreadStart(AcceptClient)) { IsBackground = true };
-            ConnThread.Start();
+            _connThread = new Thread(new ThreadStart(AcceptClient)) { IsBackground = true };
+            _connThread.Start();
         }
 
         public void ConnServerStop()
         {
             try
             {
-                if (ConnThread.IsAlive == false)
+                if (_connThread.IsAlive == false)
                 {
                     if (_clientSocket != null)
                     {
@@ -55,13 +56,13 @@ namespace LeafServer
         {
             try
             {
-                IPEndPoint ipep = new IPEndPoint(IPAddress.Any, CommonLib.SERVER_PORT);
+                IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), CommonLib.SERVER_PORT);
                 _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 _clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 _clientSocket.Bind(ipep);
-                _clientSocket.Listen(20);
+                _clientSocket.Listen(10);
 
-                while (CommonLib.IsON == true)
+                while (CommonLib.IsON)
                 {
                     Socket Client = _clientSocket.Accept();
 
@@ -69,7 +70,7 @@ namespace LeafServer
                         LeafConnection.ConnUserList.Add(new NTClient(Client));
                 }
 
-                if (CommonLib.IsON == false)
+                if (!CommonLib.IsON)
                 {
                     _clientSocket.Disconnect(true);
                     _clientSocket.Dispose();

@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using NSLib;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -39,7 +40,7 @@ namespace LeafServer
 
                 var result = conn.Query("dbo.sp_Login", param, commandType: CommandType.StoredProcedure);
 
-                if (CommonLib.IsSuccess(param.Get<int>("RetVal")))
+                if (Common.IsSuccess(param.Get<int>("RetVal")))
                 {
                     // TODO : 유저정보 바인딩 처리
                     //outUserInfo = new User();
@@ -71,7 +72,7 @@ namespace LeafServer
 
                 conn.Query("dbo.sp_DailyGP", param, commandType: CommandType.StoredProcedure);
 
-                return CommonLib.IsSuccess(param.Get<int>("RetVal"));
+                return Common.IsSuccess(param.Get<int>("RetVal"));
             }
         }
 
@@ -115,7 +116,7 @@ namespace LeafServer
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
                 conn.Query("dbo.sp_CreateAccount", param, commandType: CommandType.StoredProcedure);
 
-                return CommonLib.IsSuccess(param.Get<int>("RetVal"));
+                return Common.IsSuccess(param.Get<int>("RetVal"));
             }
         }
 
@@ -245,7 +246,7 @@ namespace LeafServer
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
                 conn.Query("dbo.sp_UpdateCostume", param, commandType: CommandType.StoredProcedure);
 
-                return CommonLib.IsSuccess(param.Get<int>("RetVal"));
+                return Common.IsSuccess(param.Get<int>("RetVal"));
             }
         }
 
@@ -261,7 +262,7 @@ namespace LeafServer
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
                 conn.Query("dbo.sp_BuyItem", param);
 
-                return CommonLib.IsSuccess(param.Get<int>("RetVal"));
+                return Common.IsSuccess(param.Get<int>("RetVal"));
             }
         }
 
@@ -277,7 +278,7 @@ namespace LeafServer
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
                 conn.Query("dbo.sp_SellItem", param, commandType: CommandType.StoredProcedure);
 
-                return CommonLib.IsSuccess(param.Get<int>("RetVal"));
+                return Common.IsSuccess(param.Get<int>("RetVal"));
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
+using NSLib;
 using System.Collections.Generic;
 using System.Data;
 

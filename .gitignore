@@ -1,3 +1,9 @@
 .vs/
 4LeafServer/bin/
 4LeafServer/obj/
+DummyClient/bin/
+DummyClient/obj/
+NSLib/bin/
+NSLib/obj/
+_config.yml
+.gitattrubutes

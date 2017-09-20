@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Text;
 
 namespace LeafServer
@@ -26,34 +24,8 @@ namespace LeafServer
         WestWind,
     }
 
-    public enum DBErrorCode
-    {
-        WrongPameter = 101,
-        AlreadyExistsAccount = 102,
-        NotExistsAccount = 103,
-        WrongPassword = 104,
-
-        Exception = 200,
-
-        SUCCESS = 1000,
-    }
-
     public class CommonLib
     {
-        #region Private
-        private static readonly Dictionary<int, string> _dbOutput = new Dictionary<int, string>()
-        {
-            /// Account
-            { 101, "입력 인자가 올바르지 않습니다." },
-            { 102, "이미 존재하는 계정 입니다."},
-            { 103, "존재하지 않는 계정 입니다." },
-            { 104, "Password가 올바르지 않습니다."},
-
-            { 200, "예상치 못한 오류가 발생 하였습니다. 관리자에게 문의 바랍니다."},
-            { 1000, "Success"}
-        };
-        #endregion
-
         #region Public
         public static readonly string DBConnConfig = "server=localhost;uid=root;pwd=leaf@server;database=4leaf";
         public static readonly string DBEncryptKey = "NS#4@Leaf&";
@@ -88,25 +60,6 @@ namespace LeafServer
             " - 작업이 성공적으로 완료 되었다는 메세지가 나타나면 클라종료 후,\r\n" +
             "   재 접속 하시면 됩니다.";
         #endregion
-
-        public static byte[] ReceiveData(Socket inClient)
-        {
-            try
-            {
-                byte[] Buffer = new byte[1024];
-                byte[] RecvData = null;
-                int RecvDataLength = inClient.Receive(Buffer, 0, 1024, SocketFlags.None);
-                RecvData = new byte[RecvDataLength];
-                for (int i = 0; i < RecvDataLength; i++)
-                { RecvData[i] = Buffer[i]; }
-
-                return RecvData;
-            }
-            catch (SocketException)
-            { return null; }
-            catch
-            { throw; }
-        }
 
         public static bool CheckChatRegion(string inArea_Eng)
         { return inArea_Eng.Contains("CT_"); }
@@ -774,22 +727,6 @@ namespace LeafServer
                     break;
             }
             return world_name;
-        }
-
-        public static string DBResult(int resCode)
-        {
-            if (_dbOutput.ContainsKey(resCode))
-                return _dbOutput[resCode];
-            else
-                return string.Empty;
-        }
-
-        public static bool IsSuccess(int resCode)
-        {
-            if (resCode == (int)DBErrorCode.SUCCESS)
-                return true;
-            else
-                return false;
         }
     }
 }
