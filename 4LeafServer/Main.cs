@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NSLib;
+using System;
 using System.Windows.Forms;
 
 namespace LeafServer
@@ -66,11 +67,11 @@ namespace LeafServer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnServerSwitch_Click(object sender, System.EventArgs e)
+        private void btnServerSwitch_Click(object sender, EventArgs e)
         {
             try
             {
-                if (CommonLib.IsON == false)
+                if (!CommonLib.IsON)
                 {
                     if (DataContainer.GetItemList == null || DataContainer.GetCardList == null)
                     {
@@ -93,7 +94,9 @@ namespace LeafServer
                     btnServerSwitch.Text = "Closed";
                     tmrConnUserCount.Enabled = true;
 
-                    Log("Server Open.");
+                    Log("Address : {0}", NetworkManager.GetLocalIPAddress);
+                    Log("Port : {0}", CommonLib.SERVER_PORT);
+                    Log("Server ON Complete.");
                 }
                 else
                 {
@@ -113,7 +116,10 @@ namespace LeafServer
                 }
             }
             catch (Exception ex)
-            { Log("Exception Error!! - " + ex.Message.ToString() + " // " + ex.StackTrace.ToString()); }
+            {
+                Log("Exception Error!");
+                Log("{0} //----// {1}", ex.StackTrace.ToString(), ex.Message.ToString());
+            }
         }
 
         private void tmrConnUserCount_Tick(object sender, EventArgs e)

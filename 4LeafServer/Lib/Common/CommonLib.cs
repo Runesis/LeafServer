@@ -34,7 +34,7 @@ namespace LeafServer
         /// <summary>
         /// Server Port
         /// </summary>
-        public static readonly UInt16 SERVER_PORT = 47500;
+        public static readonly UInt16 SERVER_PORT = 33000;
 
         /// <summary>
         /// Server On/Off Status

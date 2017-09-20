@@ -7,6 +7,7 @@ namespace DummyClient
 {
     public partial class Client : Form
     {
+        private bool _IsConnect = false;
         private ConnectionManager _connMng;
 
         public Client()
@@ -68,6 +69,7 @@ namespace DummyClient
                     if (_connMng == null)
                         _connMng = new ConnectionManager();
 
+                    _IsConnect = true;
                     _connMng.Connection(address.ToString(), port);
 
                     Log("Server Connection Complete.");
@@ -85,7 +87,10 @@ namespace DummyClient
                 if (_connMng.IsConnect)
                     _connMng.Disconnect();
 
+                _IsConnect = false;
                 _connMng.Dispose();
+
+                Log("Server Disconnection Complete.");
 
                 if (_connMng != null)
                     _connMng = null;
@@ -96,6 +101,10 @@ namespace DummyClient
         {
             try
             {
+                if (_IsConnect)
+                    Disconnect();
+                else
+                    Connect();
             }
             catch (Exception ex)
             {

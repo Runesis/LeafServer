@@ -56,6 +56,7 @@
             this.txtIPAddress.Name = "txtIPAddress";
             this.txtIPAddress.Size = new System.Drawing.Size(131, 21);
             this.txtIPAddress.TabIndex = 1;
+            this.txtIPAddress.Text = "127.0.0.1";
             // 
             // lblPort
             // 
@@ -73,6 +74,7 @@
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(64, 21);
             this.txtPort.TabIndex = 3;
+            this.txtPort.Text = "33000";
             // 
             // btnConnect
             // 

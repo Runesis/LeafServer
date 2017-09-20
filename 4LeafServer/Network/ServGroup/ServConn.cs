@@ -45,6 +45,8 @@ namespace LeafServer
                             _clientSocket = null;
                     }
                 }
+
+                LeafConnection.ConnUserList.Clear();
             }
             catch (ThreadAbortException)
             { return; }
@@ -56,7 +58,7 @@ namespace LeafServer
         {
             try
             {
-                IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), CommonLib.SERVER_PORT);
+                IPEndPoint ipep = new IPEndPoint(IPAddress.Any, CommonLib.SERVER_PORT);
                 _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 _clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 _clientSocket.Bind(ipep);
@@ -65,18 +67,26 @@ namespace LeafServer
                 while (CommonLib.IsON)
                 {
                     Socket Client = _clientSocket.Accept();
+                    string targetAddress = ((IPEndPoint)Client.RemoteEndPoint).Address.ToString();
 
                     if (Client.Connected)
+                    {
+                        // TODO : 동일 IP에서 접근한 클라이언트 차단 및 기존 접속정보 제거
+                        if (LeafConnection.ConnUserList.Exists(r => r.IPAddr == targetAddress))
+                        { }
+
                         LeafConnection.ConnUserList.Add(new NTClient(Client));
+                    }
+                    else
+                    {
+                        var target = LeafConnection.ConnUserList.Find(r => r.IPAddr == targetAddress);
+                        if (target != null)
+                            LeafConnection.ConnUserList.Remove(target);
+                    }
                 }
 
                 if (!CommonLib.IsON)
-                {
-                    _clientSocket.Disconnect(true);
-                    _clientSocket.Dispose();
-                    if (_clientSocket != null)
-                        _clientSocket = null;
-                }
+                    ConnServerStop();
             }
             catch (ThreadInterruptedException)
             { return; }
