@@ -1,8 +1,8 @@
 ﻿using Dapper;
+using MySql.Data.MySqlClient;
 using NSLib;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Text;
 
 namespace LeafServer
@@ -11,40 +11,39 @@ namespace LeafServer
     {
         public static bool CheckID(string AccountID)
         {
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
 
                 param.Add("@AccountID", AccountID);
-                //param.Add("@outCheck", boCheckValue, direction: ParameterDirection.Output);
-                conn.Query("dbo.sp_CheckAccountID", param, commandType: CommandType.StoredProcedure);
+                param.Add("@outCheck", direction: ParameterDirection.Output);
+                conn.Query("sp_CheckAccountID", param, commandType: CommandType.StoredProcedure);
 
+                return param.Get<bool>("@outCheck");
                 // TODO : SP에서 true/false 결과 반환 처리 필요
             }
-            return false;
         }
 
         public static bool Login(string AccountID, string inPassword, out UserModel outUserInfo)
         {
             outUserInfo = null;
 
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
                 param.Add("@AccountID", AccountID);
-                param.Add("@inPassword", inPassword);
+                param.Add("@Password", inPassword);
                 param.Add("@EncryptKey", CommonLib.DBEncryptKey);
-                param.Add("RetVal", direction: ParameterDirection.ReturnValue);
 
-                var result = conn.Query("dbo.sp_Login", param, commandType: CommandType.StoredProcedure);
+                var result = conn.Query("sp_Login", param, commandType: CommandType.StoredProcedure);
 
-                if (Common.IsSuccess(param.Get<int>("RetVal")))
+                if (Common.IsSuccess(result))
                 {
                     // TODO : 유저정보 바인딩 처리
-                    //outUserInfo = new User();
-                    //outUserInfo.Gender = Convert.ToInt32(UserInfoData.Tables[0].Rows[0]["Gender"]);
+                    outUserInfo = new UserModel();
+                    //outUserInfo.Gender = Convert.ToBoolean(result.Tables[0].Rows[0]["Gender"]);
                     //outUserInfo.LastLogin = Convert.ToDateTime(UserInfoData.Tables[0].Rows[0]["LastLogin"]);
 
                     //if (UserInfoData.Tables.Count > 1)
@@ -59,20 +58,17 @@ namespace LeafServer
             return false;
         }
 
-        public static bool DayGP(string AccountID, int AvatarOrder, int GetGP)
+        public static void DayGP(string AccountID, int AvatarOrder, int GetGP)
         {
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
                 param.Add("@AccountID", AccountID);
-                param.Add("@inAvatarOrder", AvatarOrder);
-                param.Add("@inGetGP", GetGP);
-                param.Add("RetVal", direction: ParameterDirection.ReturnValue);
+                param.Add("@AvatarOrder", AvatarOrder);
+                param.Add("@GetGP", GetGP);
 
-                conn.Query("dbo.sp_DailyGP", param, commandType: CommandType.StoredProcedure);
-
-                return Common.IsSuccess(param.Get<int>("RetVal"));
+                conn.Query("sp_DailyGP", param, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -105,7 +101,7 @@ namespace LeafServer
                     Gender = Data[i];
             }
 
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
@@ -114,7 +110,7 @@ namespace LeafServer
                 param.Add("@Gender", Gender);
                 param.Add("@EncryptKey", CommonLib.DBEncryptKey);
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
-                conn.Query("dbo.sp_CreateAccount", param, commandType: CommandType.StoredProcedure);
+                conn.Query("sp_CreateAccount", param, commandType: CommandType.StoredProcedure);
 
                 return Common.IsSuccess(param.Get<int>("RetVal"));
             }
@@ -122,13 +118,13 @@ namespace LeafServer
 
         public static int GetAvatarCount(string AccountID)
         {
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
                 param.Add("@AccountID", AccountID);
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
-                conn.Query("dbo.sp_GetAvatarCount", param, commandType: CommandType.StoredProcedure);
+                conn.Query("sp_GetAvatarCount", param, commandType: CommandType.StoredProcedure);
 
                 return param.Get<int>("RetVal");
             }
@@ -136,7 +132,7 @@ namespace LeafServer
 
         public static bool UpdateCostume(string AccountID, AvatarModel Avatar)
         {
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
@@ -244,7 +240,7 @@ namespace LeafServer
                 }
 
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
-                conn.Query("dbo.sp_UpdateCostume", param, commandType: CommandType.StoredProcedure);
+                conn.Query("sp_UpdateCostume", param, commandType: CommandType.StoredProcedure);
 
                 return Common.IsSuccess(param.Get<int>("RetVal"));
             }
@@ -252,7 +248,7 @@ namespace LeafServer
 
         public static bool BuyItem(string AccountID, int Order, int ItemIndex)
         {
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
@@ -260,7 +256,7 @@ namespace LeafServer
                 param.Add("@Order", Order);
                 param.Add("@ItemIndex", ItemIndex);
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
-                conn.Query("dbo.sp_BuyItem", param);
+                conn.Query("sp_BuyItem", param);
 
                 return Common.IsSuccess(param.Get<int>("RetVal"));
             }
@@ -268,7 +264,7 @@ namespace LeafServer
 
         public static bool SellItem(string AccountID, int Order, int ItemIndex)
         {
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
@@ -276,7 +272,7 @@ namespace LeafServer
                 param.Add("@Order", Order);
                 param.Add("@ItemIndex", ItemIndex);
                 param.Add("RetVal", direction: ParameterDirection.ReturnValue);
-                conn.Query("dbo.sp_SellItem", param, commandType: CommandType.StoredProcedure);
+                conn.Query("sp_SellItem", param, commandType: CommandType.StoredProcedure);
 
                 return Common.IsSuccess(param.Get<int>("RetVal"));
             }
@@ -284,14 +280,14 @@ namespace LeafServer
 
         public static List<InvenModel> GetInvenList(string AccountID, int inAvatarOrder)
         {
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
                 param.Add("@AccountID", AccountID);
                 param.Add("@Order", inAvatarOrder);
 
-                var result = conn.QueryMultiple("dbo.sp_GetInven", param, commandType: CommandType.StoredProcedure);
+                var result = conn.QueryMultiple("sp_GetInven", param, commandType: CommandType.StoredProcedure);
                 // TODO : 인벤토리 구성내용 구현
                 /*
                     List<InvenModel> InvenList = new List<InvenModel>();
@@ -321,14 +317,14 @@ namespace LeafServer
                 Data[i] = inRecvData[13 + i];
             CharName = Encoding.Default.GetString(Data).Split('\0')[0];
 
-            using (var conn = new SqlConnection(CommonLib.DBConnConfig))
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
                 conn.Open();
                 var param = new DynamicParameters();
                 param.Add("AccountID", AccountID);
                 param.Add("CharacterType", Character);
                 param.Add("CharacterName", CharName);
-                var result = conn.QuerySingle<AvatarModel>("dbo.sp_CreateAvatar", param, commandType: CommandType.StoredProcedure);
+                var result = conn.QuerySingle<AvatarModel>("sp_CreateAvatar", param, commandType: CommandType.StoredProcedure);
                 return result;
             }
         }

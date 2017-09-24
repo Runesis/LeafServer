@@ -27,7 +27,7 @@ namespace LeafServer
     public class CommonLib
     {
         #region Public
-        public static readonly string DBConnConfig = "server=localhost;uid=root;pwd=leaf@server;database=4leaf";
+        public static readonly string DBConnConfig = "server=127.0.0.1;uid=root;pwd=leaf@server;database=4leaf";
         public static readonly string DBEncryptKey = "NS#4@Leaf&";
         public static readonly int MAX_AVATAR_COUNT = 1;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace NSLib
@@ -33,6 +34,20 @@ namespace NSLib
                 return true;
             else
                 return false;
+        }
+
+        public static bool IsSuccess(object res)
+        {
+            if (res == null)
+                return false;
+            return true;
+        }
+
+        public static bool IsSuccess(IEnumerable<dynamic> resList)
+        {
+            if (resList == null || Enumerable.Count(resList) == 0)
+                return false;
+            return true;
         }
 
         public static string EnumDesc(this Enum value)
