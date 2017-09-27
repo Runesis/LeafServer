@@ -1,8 +1,14 @@
 DROP PROCEDURE IF EXISTS sp_SellItem;
 
 DELIMITER //
-CREATE PROCEDURE sp_SellItem(inAccountID VARCHAR(30), inOrder INT, inItemIndex INT)
+CREATE PROCEDURE sp_SellItem(
+	IN inAccountID VARCHAR(30),
+	IN inOrder INT,
+	IN inItemIndex INT,
+	OUT RetVal BOOL
+)
 BEGIN
+	SET RetVal = false;
 	
 	SELECT f_UID INTO @UID
 	FROM tbl_User
@@ -12,9 +18,11 @@ BEGIN
 	FROM tbl_ItemInfo
 	WHERE f_Index = inItemIndex;
 
-	UPDATE tbl_Avatar SET f_GP = f_GP + @SellPrice
-	WHERE f_UID = @UID AND f_Order = inOrder;
+	IF fnc_SubItem(inAccountID, inOrder, inItemIndex) = true THEN
+	BEGIN
+		UPDATE tbl_Avatar SET f_GP = f_GP + @SellPrice
+		WHERE f_UID = @UID AND f_Order = inOrder;
 
-	CALL sp_SubItem(inAccountID, inOrder, inItemIndex);
-
+		SET RetVal = true;
+	END; END IF;
 END; //

@@ -474,7 +474,7 @@ namespace LeafServer
             int SendDataLength = 20;
 
             TimeSpan SpanLogin = UserInfo.LastLogin - DateTime.Now;
-            int GetGP = Convert.ToInt32(SpanLogin.TotalDays);
+            UInt32 GetGP = Convert.ToUInt32(SpanLogin.TotalDays);
             if (GetGP > 5)
                 GetGP = 5;
 

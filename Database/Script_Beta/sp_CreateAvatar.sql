@@ -1,7 +1,10 @@
 DROP PROCEDURE IF EXISTS sp_CreateAvatar;
 
 DELIMITER //
-CREATE PROCEDURE sp_CreateAvatar(inAccountID VARCHAR(30), inCharacterType INT, inCharacterName VARCHAR(30))
+CREATE PROCEDURE sp_CreateAvatar(
+	IN inAccountID VARCHAR(30),
+	IN inCharacterType INT,
+	IN inCharacterName VARCHAR(30))
 BEGIN
 	IF inCharacterType = 0 THEN
 		SET @BodyBack = 2;
@@ -110,27 +113,30 @@ BEGIN
 	FROM tbl_User
 	WHERE f_ID = inAccountID;
 
-	SELECT COUNT(*) INTO @AvatarCount
+	SELECT COUNT(f_UID) INTO @AvatarCount
 	FROM tbl_Avatar
 	WHERE f_UID = @UID;
 
-	INSERT INTO tbl_Avatar(f_UID, f_Order, f_CID, f_Name, f_BodyBack, f_BodyFront, f_Hair, f_Clothes, f_Pants, f_Shoes)
-	VALUES(@UID, @AvatarCount, inCharacterType, inCharacterName, @BodyBack, @BodyFront, @Hair, @Clothes, @Pants, @Shoes);
+	IF @UID > 0 THEN
+	BEGIN
+		INSERT INTO tbl_Avatar(f_UID, f_Order, f_CID, f_Name, f_BodyBack, f_BodyFront, f_Hair, f_Clothes, f_Pants, f_Shoes)
+		VALUES(@UID, @AvatarCount, inCharacterType, inCharacterName, @BodyBack, @BodyFront, @Hair, @Clothes, @Pants, @Shoes);
 
-	SELECT f_Order AS 'Order', f_CID AS CID, f_Name AS Name, f_Knight AS Knight,
-		f_GP AS GP, f_FP AS FP,
-		f_Hair AS Hair, f_HairAcc AS HairAcc,
-		f_Clothes AS Clothes, f_Clothes2 AS Clothes2, f_Clothes3 AS Clothes3,
-		f_Pants AS Pants, f_Pants2 AS Pants2, f_Pants3 AS Pants3,
-		f_Weapone AS Weapone, f_Weapone2 AS Weapone2, f_Weapone3 AS Weapone3,
-		f_Acc1 AS Acc1, f_Acc2 AS Acc2, f_Acc3 AS Acc3, f_Acc4 AS Acc4, f_Acc5 AS Acc5
-	FROM tbl_Avatar
-	WHERE f_UID = @UID;
+		SELECT f_Order AS 'Order', f_CID AS CID, f_Name AS Name, f_Knight AS Knight,
+			f_GP AS GP, f_FP AS FP,
+			f_Hair AS Hair, f_HairAcc AS HairAcc,
+			f_Clothes AS Clothes, f_Clothes2 AS Clothes2, f_Clothes3 AS Clothes3,
+			f_Pants AS Pants, f_Pants2 AS Pants2, f_Pants3 AS Pants3,
+			f_Weapone AS Weapone, f_Weapone2 AS Weapone2, f_Weapone3 AS Weapone3,
+			f_Acc1 AS Acc1, f_Acc2 AS Acc2, f_Acc3 AS Acc3, f_Acc4 AS Acc4, f_Acc5 AS Acc5
+		FROM tbl_Avatar
+		WHERE f_UID = @UID;
+	END; END IF;
+
 END; //
 DELIMITER ;
 
-
-
+/*
 	SELECT COUNT(*) INTO @AvatarCount
 	FROM tbl_Avatar
 	WHERE f_UID = 1;
@@ -139,3 +145,4 @@ DELIMITER ;
 	SET @Temp = -1;
 	#INSERT INTO tbl_Avatar(f_UID, f_Order, f_CID, f_Name, f_BodyBack, f_BodyFront, f_Hair, f_Clothes, f_Pants, f_Shoes)
 	VALUES(@UID, @AvatarCount, 0, '', @Temp, @Temp, @Temp, @Temp, @Temp, @Temp);
+*/

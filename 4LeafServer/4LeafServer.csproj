@@ -64,6 +64,7 @@
     <Compile Include="Lib\Model\AvatarModel.cs" />
     <Compile Include="Lib\Common\CommonLib.cs" />
     <Compile Include="Lib\Common\DataContainer.cs" />
+    <Compile Include="Lib\Model\DBResultModels.cs" />
     <Compile Include="Lib\Model\InvenModel.cs" />
     <Compile Include="Lib\Class\DBDataInfo.cs" />
     <Compile Include="Lib\Model\UserModel.cs" />

@@ -1,0 +1,11 @@
+DROP PROCEDURE IF EXISTS sp_CheckAccountID;
+
+DELIMITER //
+CREATE PROCEDURE sp_CheckAccountID(
+	IN `inAccountID` VARCHAR(30),
+	OUT `outCheck` int
+)
+BEGIN
+	SELECT IF(EXISTS(SELECT 1 FROM tbl_User WHERE f_ID = inAccountID), 1, 0) INTO outCheck;
+END; //
+DELIMITER ;

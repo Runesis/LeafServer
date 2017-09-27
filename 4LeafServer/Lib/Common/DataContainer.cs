@@ -19,24 +19,20 @@ namespace LeafServer
             if (_itemInfoList.Count > 0 && _cardInfoList.Count > 0)
                 return true;
 
-            try
+            using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
             {
-                using (var conn = new MySqlConnection(CommonLib.DBConnConfig))
+                conn.Open();
+                var result = conn.QueryMultiple("sp_GetLeafData", commandType: CommandType.StoredProcedure);
+
+                if (result != null)
                 {
-                    conn.Open();
-                    var dbResult = conn.QueryMultiple("sp_GetLeafData", commandType: CommandType.StoredProcedure);
+                    _itemInfoList = result.Read<ItemModel>().AsList();
+                    _cardInfoList = result.Read<CardModel>().AsList();
 
-                    if (dbResult != null)
-                    {
-                        _itemInfoList = dbResult.Read<ItemModel>().AsList();
-                        _cardInfoList = dbResult.Read<CardModel>().AsList();
-
-                        if (_itemInfoList.Count > 0 && _cardInfoList.Count > 0)
-                            return true;
-                    }
+                    if (_itemInfoList.Count > 0 && _cardInfoList.Count > 0)
+                        return true;
                 }
             }
-            catch { return false; }
 
             return false;
         }

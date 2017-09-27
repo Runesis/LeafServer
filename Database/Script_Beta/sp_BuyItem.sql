@@ -1,8 +1,15 @@
 DROP PROCEDURE IF EXISTS sp_BuyItem;
 
 DELIMITER //
-CREATE PROCEDURE sp_BuyItem(inAccountID VARCHAR(30), inOrder INT, inItemIndex INT)
+CREATE PROCEDURE sp_BuyItem(
+	IN inAccountID VARCHAR(30),
+	IN inOrder INT,
+	IN inItemIndex INT,
+	OUT RetVal BOOL
+)
 BEGIN
+
+	SET RetVal = false;
 
 	SELECT f_UID INTO @UID
 	FROM tbl_User
@@ -13,8 +20,14 @@ BEGIN
 	WHERE f_Index = inItemIndex;
 
 	IF (SELECT f_GP FROM tbl_Avatar WHERE f_UID = @UID AND f_Order = inOrder) >= @BuyPrice THEN
-		CALL sp_AddItem(inAccountID, inOrder, inItemIndex);
-		UPDATE tbl_Avatar SET f_GP = f_GP - @BuyPrice
-		WHERE f_UID = @UID AND f_Order = inOrder;
-	END IF;
+	BEGIN
+		IF fnc_AddItem(inAccountID, inOrder, inItemIndex) = true THEN
+		BEGIN
+			UPDATE tbl_Avatar SET f_GP = f_GP - @BuyPrice
+			WHERE f_UID = @UID AND f_Order = inOrder;
+
+			SET RetVal = true;
+		END; END IF;
+	END; END IF;
 END; //
+DELIMITER ;
