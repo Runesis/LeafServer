@@ -5,5 +5,7 @@ DummyClient/bin/
 DummyClient/obj/
 NSLib/bin/
 NSLib/obj/
+SignalR/bin/
+SignalR/obj/
 _config.yml
 oldVer/
