@@ -16,6 +16,7 @@
     <div class="container">
         <input type="text" id="message" />
         <input type="button" id="sendmessage" value="Send" />
+        <input type="button" id="sendprivate" value="1 : 1" />
         <input type="hidden" id="displayname" />
         <ul id="discussion"></ul>
     </div>
@@ -41,6 +42,30 @@
                 $('#discussion').append('<li><strong>' + encodedName
                     + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
             };
+            chat.client.receivePrivateMessage = function (fromName, message) {
+                // Html encode display name and message.
+                var encodedName = $('<div />').text(fromName).html();
+                var encodedMsg = $('<div />').text(message).html();
+                // Add the message to the page.
+                $('#discussion').append('<li>from <strong>' + encodedName
+                    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+            };
+            chat.client.sendPrivateMessage = function (targetName, message) {
+                // Html encode display name and message.
+                var encodedName = $('<div />').text(targetName).html();
+                var encodedMsg = $('<div />').text(message).html();
+                // Add the message to the page.
+                $('#discussion').append('<li>to <strong>' + encodedName
+                    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+            };
+            chat.client.globalBroadcast = function (fromName, message) {
+                // Html encode display name and message.
+                var encodedName = $('<div />').text(fromName).html();
+                var encodedMsg = $('<div />').text(message).html();
+                // Add the message to the page.
+                $('#discussion').append('<li>global!! - <strong>' + encodedName
+                    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+            };
 
             // Get the user name and store it to prepend to messages.
             $('#displayname').val(prompt('Enter your name:', ''));
@@ -58,7 +83,13 @@
                 $('#sendmessage').click(function () {
                     // Call the Send method on the hub.
                     chat.server.send($('#message').val());
+                    chat.server.globalSendAll($('#message').val());
                     // Clear text box and reset focus for next comment.
+                    $('#message').val('').focus();
+                });
+                $('#sendprivate').click(function () {
+                    var targetID = "";
+                    chat.server.sendPrivateMessage(targetID, $('#message').val());
                     $('#message').val('').focus();
                 });
             });

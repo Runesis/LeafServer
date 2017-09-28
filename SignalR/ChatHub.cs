@@ -26,12 +26,12 @@ namespace SignalR
 
         public override Task OnConnected()
         {
-            var user = ConnectedUsers.Find(r => r.IdentityName == Context.User.Identity.Name);
+            var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
             if (user == null)
             {
                 user = new UserModel()
                 {
-                    UserName = Context.QueryString["UserName"],
+                    //UserName = Context.QueryString["UserName"],
                     IdentityName = Context.User.Identity.Name,
                     Connection = new ConnectionModel()
                     {
@@ -50,7 +50,7 @@ namespace SignalR
 
         public override Task OnDisconnected(bool stopCalled)
         {
-            var user = ConnectedUsers.Find(r => r.IdentityName == Context.User.Identity.Name);
+            var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
             if (user != null)
             {
                 Clients.Group(user.RoomId.ToString()).broadcastMessage(user.UserName + " Disconnected.");
@@ -70,7 +70,7 @@ namespace SignalR
         [HubMethodName("setUserName")]
         public void SetUserName(string UserName)
         {
-            var user = ConnectedUsers.Find(r => r.IdentityName == Context.User.Identity.Name);
+            var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
             if (user != null)
                 user.UserName = UserName;
         }
@@ -94,7 +94,7 @@ namespace SignalR
 
                 await Groups.Add(Context.ConnectionId, roomId);
 
-                var user = ConnectedUsers.Find(r => r.IdentityName == Context.User.Identity.Name);
+                var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
                 user.RoomId = rID;
                 room.UserList.Add(user);
 
@@ -109,7 +109,7 @@ namespace SignalR
                 var room = Rooms.Find(r => r.RoomId == rID);
                 if (room != null)
                 {
-                    var user = ConnectedUsers.Find(r => r.IdentityName == Context.User.Identity.Name);
+                    var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
                     if (room.UserList.Remove(user))
                     {
                         return Groups.Remove(Context.ConnectionId, roomId);
@@ -122,7 +122,7 @@ namespace SignalR
 
         public Task Send(string message)
         {
-            var user = ConnectedUsers.Find(r => r.IdentityName == Context.User.Identity.Name);
+            var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
 
             if (user == null)
                 return null;
@@ -130,40 +130,39 @@ namespace SignalR
             return Clients.Group(user.RoomId.ToString()).broadcastMessage(user.UserName, message);
         }
 
-        public void SendAll(string message)
+        public void GlobalSendAll(string message)
         {
-            var user = ConnectedUsers.Find(r => r.IdentityName == Context.User.Identity.Name);
+            var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
 
             if (user == null)
                 return;
 
-            Clients.All.broadcastMessage(user.UserName, message);
+            Clients.All.globalBroadcast(user.UserName, message);
         }
 
         public void SendPrivateMessage(string toUserId, string message)
         {
-
             string fromUserId = Context.ConnectionId;
 
-            var toUser = ConnectedUsers.FirstOrDefault(x => x.UserName == toUserId);
-            var fromUser = ConnectedUsers.FirstOrDefault(x => x.UserName == fromUserId);
+            var toUser = ConnectedUsers.Find(x => x.UserName == toUserId);
+            var fromUser = ConnectedUsers.Find(x => x.Connection.ConnectionID == fromUserId);
 
             if (toUser != null && fromUser != null)
             {
                 // send to 
-                Clients.Client(toUserId).sendPrivateMessage(fromUserId, fromUser.UserName, message);
+                Clients.Client(toUser.Connection.ConnectionID).receivePrivateMessage(fromUser.UserName, message);
 
                 // send to caller user
-                Clients.Caller.sendPrivateMessage(toUserId, fromUser.UserName, message);
+                Clients.Caller.sendPrivateMessage(toUser.UserName, message);
             }
         }
 
-        public void BroadCastMessage(String msgFrom, String msg, String GroupName)
-        {
-            var id = Context.ConnectionId;
-            string[] Exceptional = new string[0];
-            Clients.Group(GroupName, Exceptional).receiveMessage(msgFrom, msg, "");
-        }
+        //public void BroadCastMessage(String msgFrom, String msg, String GroupName)
+        //{
+        //    var id = Context.ConnectionId;
+        //    string[] Exceptional = new string[0];
+        //    Clients.Group(GroupName, Exceptional).receiveMessage(msgFrom, msg, "");
+        //}
     }
 
     public class UserModel
