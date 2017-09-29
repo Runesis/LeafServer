@@ -17,6 +17,7 @@
         <input type="text" id="message" />
         <input type="button" id="sendmessage" value="Send" />
         <input type="button" id="sendprivate" value="1 : 1" />
+        <input type="button" id="leaveroom" value="LeaveRoom" />
         <input type="hidden" id="displayname" />
         <ul id="discussion"></ul>
     </div>
@@ -83,7 +84,8 @@
                 $('#sendmessage').click(function () {
                     // Call the Send method on the hub.
                     chat.server.send($('#message').val());
-                    chat.server.globalSendAll($('#message').val());
+                    //chat.server.globalSendAll($('#message').val());
+
                     // Clear text box and reset focus for next comment.
                     $('#message').val('').focus();
                 });
@@ -91,6 +93,10 @@
                     var targetID = "";
                     chat.server.sendPrivateMessage(targetID, $('#message').val());
                     $('#message').val('').focus();
+                });
+                $('#leaveroom').click(function () {
+                    chat.server.leaveRoom('');
+                    console.log("asdasdasd");
                 });
             });
         });

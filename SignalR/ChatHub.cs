@@ -3,7 +3,6 @@ using Microsoft.AspNet.SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SignalR
@@ -80,6 +79,8 @@ namespace SignalR
             if (ulong.TryParse(roomId, out ulong rID))
             {
                 var room = Rooms.Find(r => r.RoomId == rID);
+                var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
+
                 if (room == null)
                 {
                     room = new RoomModel()
@@ -91,10 +92,11 @@ namespace SignalR
 
                     Rooms.Add(room);
                 }
+                else
+                    user.RoomId = rID;
 
-                await Groups.Add(Context.ConnectionId, roomId);
+                await Groups.Add(Context.ConnectionId, rID.ToString());
 
-                var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
                 user.RoomId = rID;
                 room.UserList.Add(user);
 
@@ -104,16 +106,25 @@ namespace SignalR
 
         public Task LeaveRoom(string roomId)
         {
+            var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
+
+            if (string.IsNullOrEmpty(roomId))
+                roomId = user.RoomId.ToString();
+
             if (ulong.TryParse(roomId, out ulong rID))
             {
-                var room = Rooms.Find(r => r.RoomId == rID);
+                var room = Rooms.Find(r => r != null && r.RoomId == rID);
                 if (room != null)
                 {
-                    var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
                     if (room.UserList.Remove(user))
                     {
-                        return Groups.Remove(Context.ConnectionId, roomId);
+                        user.RoomId = 0;
+                        Clients.Group(rID.ToString()).broadcastMessage(user.UserName + " leave room.");
+                        return Groups.Remove(Context.ConnectionId, rID.ToString());
                     }
+
+                    if (room.UserList.Count < 0)
+                        Rooms.Remove(room);
                 }
             }
 
@@ -124,7 +135,7 @@ namespace SignalR
         {
             var user = ConnectedUsers.Find(r => r.Connection.ConnectionID == Context.ConnectionId);
 
-            if (user == null)
+            if (user == null || user.RoomId < 1)
                 return null;
 
             return Clients.Group(user.RoomId.ToString()).broadcastMessage(user.UserName, message);
@@ -156,13 +167,6 @@ namespace SignalR
                 Clients.Caller.sendPrivateMessage(toUser.UserName, message);
             }
         }
-
-        //public void BroadCastMessage(String msgFrom, String msg, String GroupName)
-        //{
-        //    var id = Context.ConnectionId;
-        //    string[] Exceptional = new string[0];
-        //    Clients.Group(GroupName, Exceptional).receiveMessage(msgFrom, msg, "");
-        //}
     }
 
     public class UserModel
