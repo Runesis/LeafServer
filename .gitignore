@@ -7,5 +7,6 @@ NSLib/bin/
 NSLib/obj/
 SignalR/bin/
 SignalR/obj/
+packages/
 _config.yml
 oldVer/
