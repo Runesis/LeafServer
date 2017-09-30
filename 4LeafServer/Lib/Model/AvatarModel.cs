@@ -49,10 +49,11 @@ namespace LeafServer
         public UInt16 HairAcc { get; set; }
         public UInt16 Shoes { get; set; }
 
-        public List<UInt16> Clothes;
-        public List<UInt16> Pants;
-        public List<UInt16> Weapone;
-        public List<UInt16> Accessory;
+        // TODO : 각 컬럼 배열 구조에 넣는 기능 추가
+        public List<UInt16> Clothes { get; set; }
+        public List<UInt16> Pants { get; set; }
+        public List<UInt16> Weapone { get; set; }
+        public List<UInt16> Accessory { get; set; }
 
         public void InitContume()
         {
