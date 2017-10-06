@@ -70,8 +70,8 @@ namespace LeafServer
                 return -1;
             else
                 return LeafConnection.ConnUserList.FindAll(r =>
-                    r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != null
-                    && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName.Length > 0
+                    r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name != null
+                    && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name.Length > 0
                     && r.CurrentArea == inArea).Count;
         }
 

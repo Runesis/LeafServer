@@ -34,7 +34,7 @@ namespace LeafServer
             Roof = inRoof;
             Interior = inInterior;
             MaxUser = inMaxCount;
-            Owner = inRoomOwner.UserInfo.AvatarList.Find(r => r.Order == inRoomOwner.UserInfo.AvatarOrder).CharacterName;
+            Owner = inRoomOwner.UserInfo.AvatarList.Find(r => r.Order == inRoomOwner.UserInfo.AvatarOrder).Name;
 
             UserList = new List<NTClient> { inRoomOwner };
         }

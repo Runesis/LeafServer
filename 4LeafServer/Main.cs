@@ -124,8 +124,7 @@ namespace LeafServer
 
         private void tmrConnUserCount_Tick(object sender, EventArgs e)
         {
-            LeafConnection.ConnUserList.RemoveAll(r => r.ClientSocket.Connected == false);
-            LeafConnection.ConnUserList.RemoveAll(r => r.ClientSocket == null);
+            LeafConnection.ConnUserList.RemoveAll(r => r.ClientSocket == null || r.ClientSocket.Connected == false);
 
             txtboxConnUserCount.Text = LeafConnection.ConnUserList.Count.ToString();
         }

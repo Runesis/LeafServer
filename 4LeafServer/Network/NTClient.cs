@@ -166,7 +166,7 @@ namespace LeafServer
                                 if (_areaPath.Count > 1)
                                 {
                                     CurrentArea = _areaPath[_areaPath.Count - 1];
-                                    _protocol.LeaveAreaUserList(UserInfo.AvatarList[UserInfo.AvatarOrder].CharacterName, CurrentArea);
+                                    _protocol.LeaveAreaUserList(UserInfo.AvatarList[UserInfo.AvatarOrder].Name, CurrentArea);
                                 }
 
                                 ClientSocket.Send(_protocol.MoveArea(_recvData, ref _areaPath));
@@ -271,7 +271,7 @@ namespace LeafServer
                                 {
                                     #region 0 : 채팅방 입장 요청
                                     case 0:
-                                        _protocol.LeaveAreaUserList(UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).CharacterName, CurrentArea);
+                                        _protocol.LeaveAreaUserList(UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).Name, CurrentArea);
                                         ChatRoomIndex = _recvData[8];
                                         EnterRoom = true;
                                         ClientSocket.Send(_protocol.EnterRoom(UserInfo, ChatRoomIndex));

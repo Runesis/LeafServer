@@ -34,8 +34,8 @@ namespace LeafServer
         ///벤야         -86 : 134
         ///</Charecter>
 
-        public string CharacterName = null;
-        public string Knights = null;
+        public string Name = null;
+        public string Knight = null;
         public List<InvenModel> Inven = null;
 
         public UInt32 GP { get; set; }
@@ -143,5 +143,53 @@ namespace LeafServer
                 }
             }
         }
+
+        public void SetEquipment(List<EquipmentModel> objModel)
+        {
+            var EquipModel = objModel.FindAll(r => r.Order == Order);
+
+            if (EquipModel.Exists(r => r.Mount == 3))
+                Hair = EquipModel.Find(r => r.Mount == 3).EquipId;
+            if (EquipModel.Exists(r => r.Mount == 4))
+                HairAcc = EquipModel.Find(r => r.Mount == 4).EquipId;
+
+            if (EquipModel.Exists(r => r.Mount == 5))
+            {
+                foreach (var objEquip in EquipModel.FindAll(r => r.Mount == 5))
+                    Clothes.Add(objEquip.EquipId);
+            }
+
+            if (EquipModel.Exists(r => r.Mount == 6))
+            {
+                foreach (var objEquip in EquipModel.FindAll(r => r.Mount == 6))
+                    Pants.Add(objEquip.EquipId);
+            }
+
+            if (EquipModel.Exists(r => r.Mount == 7))
+                Shoes = EquipModel.Find(r => r.Mount == 7).EquipId;
+
+            if (EquipModel.Exists(r => r.Mount == 8))
+            {
+                foreach (var objEquip in EquipModel.FindAll(r => r.Mount == 8))
+                    Weapone.Add(objEquip.EquipId);
+            }
+
+            if (EquipModel.Exists(r => r.Mount == 9))
+            {
+                foreach (var objEquip in EquipModel.FindAll(r => r.Mount == 9))
+                    Accessory.Add(objEquip.EquipId);
+            }
+        }
+    }
+
+    public class EquipmentModel : DisposeClass
+    {
+        ~EquipmentModel()
+        { Dispose(); }
+
+        public UInt64 UID { get; set; }
+        public byte Order { get; set; }
+        public UInt16 EquipId { get; set; }
+        public byte Mount { get; set; }
     }
 }

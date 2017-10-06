@@ -37,25 +37,33 @@ namespace LeafServer
                 param.Add("inAccountID", AccountID);
                 param.Add("inPassword", inPassword);
                 param.Add("EncryptKey", CommonLib.DBEncryptKey);
+                param.Add("RetVal", direction: ParameterDirection.Output);
 
                 var result = conn.QueryMultiple("sp_Login", param, commandType: CommandType.StoredProcedure);
 
-                if (Common.IsSuccess(result))
+                var loginResult = result.Read<LoginResultModel>().FirstOrDefault();
+                var avatarList = result.Read<AvatarModel>().ToList();
+                var equipList = result.Read<EquipmentModel>().ToList();
+                if (loginResult == null)
+                    return false;
+
+                if (Common.IsSuccess(loginResult))
                 {
-                    outUserInfo = new UserModel();
-
-                    var loginResult = result.Read<LoginResultModel>().ToList();
-                    var avatarList = result.Read<AvatarModel>().ToList();
-                    if (loginResult == null)
-                        return false;
-
-                    outUserInfo.Gender = loginResult[0].Gender;
-                    outUserInfo.LastLogin = loginResult[0].LastLogin;
+                    outUserInfo = new UserModel
+                    {
+                        Gender = loginResult.Gender,
+                        LastLogin = loginResult.LastLogin
+                    };
 
                     if (avatarList == null)
                         outUserInfo.AvatarList = new List<AvatarModel>();
                     else
+                    {
+                        foreach (var objAvatar in avatarList)
+                            objAvatar.SetEquipment(equipList);
+
                         outUserInfo.AvatarList = avatarList;
+                    }
 
                     return true;
                 }

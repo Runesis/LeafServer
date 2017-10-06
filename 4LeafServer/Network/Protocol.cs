@@ -1350,14 +1350,14 @@ namespace LeafServer
             byte[] Data = null;
 
             List<string> AreaCharacterList = new List<string>();
-            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != null
-                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName.Length > 0
+            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name != null
+                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name.Length > 0
                 && r.CurrentArea == inAreaName_Kor));
 
             lock (UserList)
             {
                 foreach (NTClient Client in UserList)
-                    AreaCharacterList.Add(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].CharacterName);
+                    AreaCharacterList.Add(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].Name);
 
                 foreach (NTClient Client in UserList)
                 {
@@ -1425,7 +1425,7 @@ namespace LeafServer
                     Data = BitConverter.GetBytes(Client.AreaIndex);
                     for (int i = 0; i < 4; i++)
                         SendData[8 + i] = Data[i];
-                    Data = Encoding.Default.GetBytes(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].CharacterName);
+                    Data = Encoding.Default.GetBytes(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].Name);
                     for (int i = 0; i < Data.Length; i++)
                         SendData[12 + i] = Data[i];
                     Client.ClientSocket.Send(SendData);
@@ -1442,9 +1442,9 @@ namespace LeafServer
             byte[] Data = null;
 
             List<string> AreaCharacterList = new List<string>();
-            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != null
-                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName.Length > 0
-                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != inCharacterName
+            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name != null
+                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name.Length > 0
+                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name != inCharacterName
                 && r.CurrentArea == inAreaName_Kor));
 
             if (UserList.Count < 1)
@@ -1453,7 +1453,7 @@ namespace LeafServer
             lock (UserList)
             {
                 foreach (NTClient Client in UserList)
-                    AreaCharacterList.Add(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].CharacterName);
+                    AreaCharacterList.Add(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].Name);
 
                 foreach (NTClient Client in UserList)
                 {
@@ -1519,7 +1519,7 @@ namespace LeafServer
                     Data = BitConverter.GetBytes(Client.AreaIndex);
                     for (int i = 0; i < 4; i++)
                         SendData[8 + i] = Data[i];
-                    Data = Encoding.Default.GetBytes(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].CharacterName);
+                    Data = Encoding.Default.GetBytes(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].Name);
                     for (int i = 0; i < Data.Length; i++)
                         SendData[12 + i] = Data[i];
                     Client.ClientSocket.Send(SendData);
@@ -1537,15 +1537,15 @@ namespace LeafServer
             string ChatMessge = GetMessage(inRecvData);
 
             List<string> AreaCharacterList = new List<string>();
-            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != null
-                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName.Length > 0
+            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name != null
+                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name.Length > 0
                 && r.CurrentArea == inAreaName_Kor
                 && r.EnterRoom == false));
 
             lock (UserList)
             {
                 foreach (NTClient Client in UserList)
-                    AreaCharacterList.Add(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].CharacterName);
+                    AreaCharacterList.Add(Client.UserInfo.AvatarList[Client.UserInfo.AvatarOrder].Name);
 
                 foreach (NTClient Client in UserList)
                 {
@@ -1624,11 +1624,11 @@ namespace LeafServer
             int SendDataLength = 0;
 
             byte RoomIndex = inRecvData[8];
-            string Creator = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).CharacterName;
+            string Creator = UserInfo.AvatarList.Find(r => r.Order == UserInfo.AvatarOrder).Name;
             byte[] Data = Encoding.Default.GetBytes(Creator);
 
-            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != null
-                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName.Length > 0
+            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name != null
+                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name.Length > 0
                 && r.CurrentArea == inAreaName_Kor));
 
             lock (UserList)
@@ -1680,8 +1680,8 @@ namespace LeafServer
             byte[] DataLength = null;
             int SendDataLength = 0;
 
-            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != null
-                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName.Length > 0
+            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name != null
+                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name.Length > 0
                 && r.CurrentArea == inAreaName_Kor));
 
             lock (UserList)
@@ -1718,8 +1718,8 @@ namespace LeafServer
 
             byte[] Data = Encoding.Default.GetBytes(NewRoom.Title);
 
-            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName != null
-                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].CharacterName.Length > 0
+            List<NTClient> UserList = new List<NTClient>(LeafConnection.ConnUserList.FindAll(r => r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name != null
+                && r.UserInfo.AvatarList[r.UserInfo.AvatarOrder].Name.Length > 0
                 && r.CurrentArea == inAreaName_Kor));
 
             lock (UserList)
@@ -1786,7 +1786,7 @@ namespace LeafServer
             Avatar[DataIndex++] = Convert.ToByte(inAvatar.CID);
 
             // 아바타 이름       - [1] / 22
-            TempData = Encoding.Default.GetBytes(inAvatar.CharacterName);
+            TempData = Encoding.Default.GetBytes(inAvatar.Name);
 
             for (int i = 0; i < TempData.Length; i++)
                 Avatar[DataIndex++] = TempData[i];
@@ -1854,7 +1854,7 @@ namespace LeafServer
             DataIndex = 84;
 
             // 기사단            - [84] / 24
-            TempData = Encoding.Default.GetBytes(inAvatar.Knights);
+            TempData = Encoding.Default.GetBytes(inAvatar.Knight);
 
             for (int i = 0; i < TempData.Length; i++)
                 Avatar[DataIndex++] = TempData[i];
@@ -1892,7 +1892,7 @@ namespace LeafServer
             Avatar[DataIndex++] = Convert.ToByte(inAvatar.CID);
 
             // 아바타 이름       - [1] / 22
-            TempData = Encoding.Default.GetBytes(inAvatar.CharacterName);
+            TempData = Encoding.Default.GetBytes(inAvatar.Name);
 
             for (int i = 0; i < TempData.Length; i++)
                 Avatar[DataIndex++] = TempData[i];
@@ -1960,7 +1960,7 @@ namespace LeafServer
             DataIndex = 84;
 
             // 기사단            - [84] / 24
-            TempData = Encoding.Default.GetBytes(inAvatar.Knights);
+            TempData = Encoding.Default.GetBytes(inAvatar.Knight);
 
             for (int i = 0; i < TempData.Length; i++)
                 Avatar[DataIndex++] = TempData[i];
