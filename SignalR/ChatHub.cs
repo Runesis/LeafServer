@@ -54,7 +54,7 @@ namespace SignalR
             {
                 Clients.Group(user.RoomId.ToString()).broadcastMessage(user.UserName + " Disconnected.");
 
-                Rooms.RemoveAll(r => r.UserList.Exists(z => z.IdentityName == user.IdentityName));
+                Rooms.RemoveAll(r => r != null && r.UserList.Exists(z => z.IdentityName == user.IdentityName));
                 ConnectedUsers.Remove(user);
             }
 
