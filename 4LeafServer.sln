@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSLib", "NSLib\NSLib.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR", "SignalR\SignalR.csproj", "{D653CCA8-BF0B-4A63-819A-D147712CC68B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yggdrasil", "YGClient\Yggdrasil.csproj", "{BF856C79-01FC-4F4C-BF45-C160863925BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,14 @@ Global
 		{D653CCA8-BF0B-4A63-819A-D147712CC68B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D653CCA8-BF0B-4A63-819A-D147712CC68B}.Release|x86.ActiveCfg = Release|Any CPU
 		{D653CCA8-BF0B-4A63-819A-D147712CC68B}.Release|x86.Build.0 = Release|Any CPU
+		{BF856C79-01FC-4F4C-BF45-C160863925BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF856C79-01FC-4F4C-BF45-C160863925BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF856C79-01FC-4F4C-BF45-C160863925BF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BF856C79-01FC-4F4C-BF45-C160863925BF}.Debug|x86.Build.0 = Debug|Any CPU
+		{BF856C79-01FC-4F4C-BF45-C160863925BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF856C79-01FC-4F4C-BF45-C160863925BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF856C79-01FC-4F4C-BF45-C160863925BF}.Release|x86.ActiveCfg = Release|Any CPU
+		{BF856C79-01FC-4F4C-BF45-C160863925BF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
