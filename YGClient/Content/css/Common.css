@@ -1,0 +1,35 @@
+﻿input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: #eaeaea; /* fallback for old browsers */
+    background: -webkit-linear-gradient(right, #eaeaea, #bfbfbf);
+    background: -moz-linear-gradient(right, #eaeaea, #bfbfbf);
+    background: -o-linear-gradient(right, #eaeaea, #bfbfbf);
+    background: linear-gradient(to left, #eaeaea, #bfbfbf);
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.Screen {
+    background-image: url("Background.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: -1;
+}
+
+    .Screen.Active {
+        display: block;
+        z-index: 1;
+    }
