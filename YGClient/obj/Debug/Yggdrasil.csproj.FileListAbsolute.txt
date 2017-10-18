@@ -1,8 +1,0 @@
-D:\Nexia\Project\4LeafServer\YGClient\bin\Yggdrasil.dll.config
-D:\Nexia\Project\4LeafServer\YGClient\bin\Yggdrasil.dll
-D:\Nexia\Project\4LeafServer\YGClient\bin\Yggdrasil.pdb
-D:\Nexia\Project\4LeafServer\YGClient\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-D:\Nexia\Project\4LeafServer\YGClient\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\Nexia\Project\4LeafServer\YGClient\obj\Debug\Yggdrasil.csprojResolveAssemblyReference.cache
-D:\Nexia\Project\4LeafServer\YGClient\obj\Debug\Yggdrasil.dll
-D:\Nexia\Project\4LeafServer\YGClient\obj\Debug\Yggdrasil.pdb
