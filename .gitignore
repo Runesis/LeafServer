@@ -7,6 +7,8 @@ NSLib/bin/
 NSLib/obj/
 SignalR/bin/
 SignalR/obj/
+YGClient/bin/
+YGClient/obj/
 packages/
 _config.yml
 oldVer/
