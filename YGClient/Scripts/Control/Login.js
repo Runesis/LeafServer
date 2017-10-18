@@ -22,27 +22,31 @@ $().ready(function () {
     $('form.login-form button').click(function () {
         Login();
     });
-
-    MainLoad();
 });
 
-function MainLoad() {
-    $('div.background').fadeIn(3000, function () {
-        $('div.form').fadeIn(1800).queue(function () {
-            $('div.form').css('display', 'block');
-            console.log("login form load complete");
+function MainLoad(loadFlag) {
+    if (loadFlag) {
+        $('div.background').fadeIn(3000, function () {
+            $('div.form').fadeIn(1800).queue(function () {
+                $('div.form').css('display', 'block');
+                console.log("login form load complete");
+            });
         });
-    });
+    }
+    else {
+        $('div.background').css('display', 'block');
+    }
 }
 
 function Login() {
     var logId = $('#logEmail').val();
     var logPass = $('#logPassword').val();
 
-    if (logId.length < 1 || logPass.length < 4)
+    if (logId.length < 1 || logPass.length < 4 || !isValidEmailAddress(logId))
         alert('입력이 올바르지 않습니다');
-    else
+    else {
         showScreen('WorldMap');
+    }
 }
 
 function Register()

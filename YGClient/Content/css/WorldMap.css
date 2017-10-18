@@ -1,2 +1,19 @@
-﻿body {
+﻿
+.map {
+    width: 30em;
+    margin: auto;
+    text-align: center;
 }
+
+    .map.window {
+        position: relative;
+        background: #FFFFFF;
+        display: none;
+        /*max-width: 1280px;
+        max-height: 800px;*/
+        margin: 8% auto 7.2em /*100px*/;
+        padding: 3.3em /*45px*/;
+        text-align: center;
+        box-shadow: 0 0 1.5em /*20px*/ 0 rgba(0, 0, 0, 0.2), 0 0.4em /*5px*/ 0.4em /*5px*/ 0 rgba(0, 0, 0, 0.24);
+        z-index: 2;
+    }

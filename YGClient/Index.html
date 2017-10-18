@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>Yggdrasil</title>
     <link rel="stylesheet" href="Content/css/Login.css" />
+    <link rel="stylesheet" href="Content/css/WorldMap.css" />
     <link rel="stylesheet" href="Content/css/Common.css" />
     <script src="Scripts/jquery-3.2.1.min.js"></script>
     <script src="Scripts/Common.js"></script>
@@ -12,25 +13,28 @@
 </head>
 <body>
     <div id="Client" class="background">
-        <div class="Screen Active LoginForm" id="LoginForm">
+        <div class="Screen LoginForm" id="LoginForm">
             <div class="form">
-                <form class="register-form">
-                    <input type="email" id="regEmail" placeholder="Email Account" />
-                    <input type="password" id="regPassword" placeholder="Password" maxlength="20" />
-                    <input type="number" placeholder="PriveteNumber(6)" min="19300101" max="20170101" maxlength="8" id="privatenum" />
+                <form class="register-form" onsubmit="return false">
+                    <input type="email" id="regEmail" name="regEmail" placeholder="Email Account" required />
+                    <input type="password" id="regPassword" name="regPassword" placeholder="Password" maxlength="20" required />
+                    <input type="number" placeholder="PriveteNumber(6)" min="19300101" max="20170101" maxlength="8" id="privatenum" name="privatenum" required />
                     <button class="create">Create</button>
                     <p class="message">Already registered? <a href="#">Sign In</a></p>
                 </form>
-                <form class="login-form">
-                    <input type="email" id="logEmail" placeholder="Email Account" />
-                    <input type="password" id="logPassword" placeholder="Password" />
+                <form class="login-form" onsubmit="return false">
+                    <input type="email" id="logEmail" name="logEmail" placeholder="Email Account" required />
+                    <input type="password" id="logPassword" name="logPassword" placeholder="Password" required />
                     <button>login</button>
                     <p class="message">Not registered? <a href="#">Create an account</a></p>
                 </form>
             </div>
         </div>
-        <div class="Screen WorldMap" id="WorldMap">
-
+        <div class="Screen Active WorldMap" id="WorldMap">
+            <div class="map">
+                <h3>월드맵이 보여져야 합니다</h3>
+                <canvas id="MapCanvas" class="window"></canvas>
+            </div>
         </div>
         <div class="Screen" id="ChatRegion"></div>
         <div class="Screen" id="ChatRoom"></div>
