@@ -36,7 +36,7 @@ function MainLoad(loadFlag) {
     else {
         $('div.background').css('display', 'block');
     }
-}
+};
 
 function Login() {
     var logId = $('#logEmail').val();
@@ -47,7 +47,7 @@ function Login() {
     else {
         showScreen('WorldMap');
     }
-}
+};
 
 function Register()
-{ }
+{ };

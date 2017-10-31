@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="Content/css/WorldMap.css" />
     <link rel="stylesheet" href="Content/css/Common.css" />
     <script src="Scripts/jquery-3.2.1.min.js"></script>
-    <script src="Scripts/Common.js"></script>
     <script src="Scripts/Control/Login.js"></script>
     <script src="Scripts/Control/WorldMap.js"></script>
+    <script src="Scripts/Control/Character.js"></script>
+    <script src="Scripts/Common.js"></script>
 </head>
 <body>
     <div id="Client" class="background">
@@ -33,7 +34,9 @@
         <div class="Screen Active WorldMap" id="WorldMap">
             <div class="map">
                 <h3>월드맵이 보여져야 합니다</h3>
-                <canvas id="MapCanvas" class="window"></canvas>
+                <!--<canvas id="MapCanvas" class="window"></canvas>-->
+                <canvas id="CharCanvas" style="position:relative;"></canvas>
+                <canvas id="CharCanvas2" style="position:relative;"></canvas>
             </div>
         </div>
         <div class="Screen" id="ChatRegion"></div>
