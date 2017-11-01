@@ -28,7 +28,7 @@ $().ready(function () {
     drawAvatar("CharCanvas2", equip2, false);
 
     var direction = true;
-    $(window).click(function (e) {
+    $('#CharCanvas').click(function (e) {
         drawAvatar("CharCanvas", equip, direction)
         if (direction)
             direction = false;
