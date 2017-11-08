@@ -3,16 +3,39 @@
 <head>
     <meta charset="utf-8" />
     <title>Yggdrasil</title>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="Content/css/reset.css" />
+    <link rel="stylesheet" href="Content/css/nav.css" />
+    <link rel="stylesheet" href="Content/jbox/jBox.css" />
+    <link rel="stylesheet" href="Content/jbox/plugins/Notice/jBox.Notice.css" />
+    <link rel="stylesheet" href="Content/jbox/plugins/Confirm/jBox.Confirm.css" />
+    <link rel="stylesheet" href="Content/jbox/themes/NoticeFancy.css" />
     <link rel="stylesheet" href="Content/css/Login.css" />
     <link rel="stylesheet" href="Content/css/WorldMap.css" />
     <link rel="stylesheet" href="Content/css/Common.css" />
     <script src="Scripts/jquery-3.2.1.min.js"></script>
+    <script src="Scripts/modernizr.js"></script>
+    <script src="Scripts/nav.js"></script>
+    <script src="Content/jbox/jBox.js"></script>
+    <script src="Content/jbox/plugins/Notice/jBox.Notice.js"></script>
+    <script src="Content/jbox/plugins/Confirm/jBox.Confirm.js"></script>
     <script src="Scripts/Control/Login.js"></script>
     <script src="Scripts/Control/WorldMap.js"></script>
     <script src="Scripts/Control/Character.js"></script>
     <script src="Scripts/Common.js"></script>
 </head>
 <body>
+    <nav class="cd-stretchy-nav">
+        <a class="cd-nav-trigger" href="#0">Menu<span aria-hidden="true"></span></a>
+        <ul>
+            <li id="navHome"><a href="#0"><span>Home</span></a></li>
+            <li id="navOption"><a href="#0"><span>Option</span></a></li>
+            <li><a href="#0"><span>Services</span></a></li>
+            <li><a href="#0"><span>Store</span></a></li>
+            <li><a href="#0"><span>Contact</span></a></li>
+        </ul>
+        <span aria-hidden="true" class="stretchy-nav-bg"></span>
+    </nav>
     <div id="Client" class="background">
         <div class="Screen LoginForm" id="LoginForm">
             <div class="form">
@@ -35,8 +58,8 @@
             <div class="map">
                 <h3>월드맵이 보여져야 합니다</h3>
                 <!--<canvas id="MapCanvas" class="window"></canvas>-->
-                <canvas id="CharCanvas" style="position:relative;"></canvas>
-                <canvas id="CharCanvas2" style="position:relative;"></canvas>
+                <!--<canvas id="CharCanvas" style="position:relative;"></canvas>
+                <canvas id="CharCanvas2" style="position:relative;"></canvas>-->
             </div>
         </div>
         <div class="Screen" id="ChatRegion"></div>

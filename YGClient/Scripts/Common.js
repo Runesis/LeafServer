@@ -1,40 +1,97 @@
 ﻿"use strict";
 
 $().ready(function () {
-    MainLoad(false);
 
-    drawWorldMap();
+    // 참조링크 : https://stephanwagner.me/jBox
 
-    var equip = {
-        body: "Body_W",
-        clothes: "Cloth_W",
-        hair: "Hair_W",
-        eye: "Eye_01",
-        eyebrow: "Eyebrow_01",
-        mouth: "Mouth_01",
-        voltouch: "Voltouch_01"
-    },
-        equip2 = {
-            body: "Body_M",
-            clothes: "Cloth_M",
-            hair: "Hair_M",
-            eye: "Eye_02",
-            eyebrow: "Eyebrow_02",
-            mouth: "Mouth_03",
-            voltouch: "Voltouch_02",
-        };
-
-    drawAvatar("CharCanvas", equip, true);
-    drawAvatar("CharCanvas2", equip2, false);
-
-    var direction = true;
-    $('#CharCanvas').click(function (e) {
-        drawAvatar("CharCanvas", equip, direction)
-        if (direction)
-            direction = false;
-        else
-            direction = true;
+    $('#navHome').click(function () {
+        new jBox('Notice', {
+            theme: 'NoticeFancy',
+            attributes: {
+                x: 'left',
+                y: 'bottom'
+            },
+            color: getColor(),
+            content: getString(),
+            title: getTitle(),
+            maxWidth: 600,
+            audio: '/Content/jbox/audio/bling2',
+            volume: 80,
+            autoClose: Math.random() * 8000 + 2000,
+            animation: { open: 'slide:bottom', close: 'slide:left' },
+            delayOnHover: true,
+            showCountdown: true,
+            closeButton: true
+        });
     });
+
+    new jBox('Modal', {
+        attach: '#navOption',
+        width: 350,
+        height: 200,
+        blockScroll: false,
+        animation: 'zoomIn',
+        draggable: 'title',
+        closeButton: true,
+        content: '<h3>You can move this modal window</h3>',
+        title: 'Option',
+        overlay: false,
+        reposition: false,
+        repositionOnOpen: false
+    });
+
+    $('#navOption').click(function () {
+
+    });
+
+    var colors = ['red', 'green', 'blue', 'yellow'], index = 0;
+    var getColor = function () {
+        (index >= colors.length) && (index = 0);
+        return colors[index++];
+    };
+    var strings = ['Short', 'You just switched the internet off', 'Please do not click too hard - next time we\'ll notify google.', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.'];
+    var getString = function () {
+        return strings[Math.floor(Math.random() * strings.length)];
+    };
+
+    var titles = ['Congrats', 'Success', 'Thank you', false, false, false];
+    var getTitle = function () {
+        return titles[Math.floor(Math.random() * strings.length)];
+    };
+
+    //MainLoad(false);
+    //drawWorldMap();
+
+    //var equip = {
+    //    body: "Body_W",
+    //    clothes: "Cloth_W",
+    //    hair: "Hair_W",
+    //    eye: "Eye_01",
+    //    eyebrow: "Eyebrow_01",
+    //    mouth: "Mouth_01",
+    //    voltouch: "Voltouch_01"
+    //},
+    //    equip2 = {
+    //        body: "Body_M",
+    //        clothes: "Cloth_M",
+    //        hair: "Hair_M",
+    //        eye: "Eye_02",
+    //        eyebrow: "Eyebrow_02",
+    //        mouth: "Mouth_03",
+    //        voltouch: "Voltouch_02",
+    //    };
+
+    //drawAvatar("CharCanvas", equip, true);
+    //drawAvatar("CharCanvas2", equip2, false);
+
+    //var direction = true;
+    //$('#CharCanvas').click(function (e) {
+    //    drawAvatar("CharCanvas", equip, direction)
+    //    if (direction)
+    //        direction = false;
+    //    else
+    //        direction = true;
+    //});
 });
 
 function showScreen(screenId) {
